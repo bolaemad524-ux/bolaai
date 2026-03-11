@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مساعد بولا عماد الذكي</title>
+    <title>مساعد مكتب بولا عماد</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -44,7 +44,7 @@
     </main>
 
     <div id="typingIndicator" class="hidden px-4 pb-4 max-w-2xl mx-auto w-full">
-        <div class="bg-slate-800 w-16 p-3 rounded-2xl rounded-tr-none flex justify-center border border-slate-700">
+        <div class="bg-slate-800 w-16 p-3 rounded-2xl rounded-tr-none flex justify-center border border-slate-700 shadow-md">
             <div class="flex gap-1"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span></div>
         </div>
     </div>
@@ -75,11 +75,20 @@
         const avatarMouth = document.getElementById('avatar-mouth');
 
         let isProcessing = false;
+        let waitingMsgCount = 0;
+        let lastMessageTime = 0;
 
-        const STUDIO_DATA = {
-            prices: "المجات: أبيض 100ج، بايركس 85ج، سحري 150ج. التابلوهات: تبدأ من 35ج لمقاس 10*15. العنوان: شارع صدقي بجوار الراعي. الحجز: 01285957035.",
-            info: "مكتب واستوديو بولا عماد متخصص في الطباعة والهدايا والتابلوهات."
-        };
+        const SYSTEM_PROMPT = `أنت مساعد بشري لمكتب بولا عماد.
+قواعد الرد:
+1. العروض: ارسل رابط المتجر https://bolaemad524-ux.github.io/bolastore/8.html
+2. "تمام" فقط: رد بـ "تمام يا فندم 👍"
+3. "انشاء الله": رد بـ "باذن الله"
+4. تكرار: لا تكرر الرد لو الرسائل في نفس الدقيقة.
+5. رسالة الانتظار: "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل" بحد أقصى مرتين فقط.
+6. ممنوع "لا يوجد رد" أو اعتذار تقني، استخدم رسالة الانتظار بدلاً منها.
+7. الترحيب: مساء الخير -> مساء النور يا فندم، مكتب واستوديو بولا عماد معاك / السلام عليكم -> سلام ورحمه الله وبركاته.
+8. الأسعار: التابلوهات (1510 بـ 35ج، 2115 بـ 65ج، 3020 بـ 85ج، 4030 بـ 135ج) / المجات (أبيض 100ج، بايركس 85ج، سحري 150ج) / الصور (2115 بـ 10ج) / الميداليات (فانوس 20ج) / السلاسل (120ج) / المحافظ (150ج) / التصوير (80 قرشا).
+9. الحجز: فودافون كاش 01285957035.`;
 
         function append(sender, text) {
             const div = document.createElement('div');
@@ -89,66 +98,55 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        async function processChat(text) {
+        async function processChat(text, isImage = false) {
             if (isProcessing) return;
+            const now = Date.now();
+            if (!isImage && (now - lastMessageTime < 2000)) return; // منع التكرار السريع
+            lastMessageTime = now;
+
+            // قاعدة الإيموشن فقط
+            if (!isImage && /^[\p{Emoji}\s]+$/u.test(text)) return;
+
             isProcessing = true;
             typingIndicator.classList.remove('hidden');
-            statusText.textContent = "جاري الكتابة...";
 
             let responseText = "";
-            const lowerText = text.toLowerCase();
 
-            // 1. محاولة الرد من البيانات المحلية أولاً لضمان السرعة والدقة
-            if (lowerText.includes("سعر") || lowerText.includes("بكام") || lowerText.includes("مج") || lowerText.includes("تابلو")) {
-                responseText = STUDIO_DATA.prices;
-            } else if (lowerText.includes("عنوان") || lowerText.includes("فين")) {
-                responseText = "عنوانا: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد.";
-            } else if (lowerText.includes("خير") || lowerText.includes("سلام")) {
-                responseText = "أهلاً بيك يا فندم في مكتب بولا عماد، منورنا! أؤمرني أقدر أساعدك إزاي؟";
-            }
-
-            // 2. لو مفيش رد محلي، نكلم جوجل
-            if (!responseText) {
+            if (isImage) {
+                responseText = "انتظر سيتم الرد عليك بعد لحظات من خلال فريق العمل";
+            } else if (text === "تمام") {
+                responseText = "تمام يا فندم 👍";
+            } else {
                 try {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: "أنت مساعد بشري لمكتب بولا عماد. رد بالمصري وباختصار شديد بناءً على: " + STUDIO_DATA.prices + ". الرسالة: " + text }] }] })
+                        body: JSON.stringify({
+                            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                            contents: [{ parts: [{ text: text }] }]
+                        })
                     });
                     const data = await res.json();
-                    responseText = data.candidates[0].content.parts[0].text;
+                    responseText = data.candidates[0].content.parts[0].text.trim();
                 } catch (e) {
-                    responseText = "تحت أمرك يا فندم، اسألني عن أسعار المجات أو التابلوهات أو العنوان وهفيدك فوراً.";
+                    if (waitingMsgCount < 2) {
+                        responseText = "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل";
+                        waitingMsgCount++;
+                    }
                 }
             }
 
-            // 3. انتظار وقت الكتابة (ثانيتين)
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            append('AI', responseText);
+            await new Promise(r => setTimeout(r, 2000)); // وقت الكتابة الطبيعي
+            if (responseText) append('AI', responseText);
             
-            // تحريك الفم
-            if(avatarMouth) avatarMouth.style.transform = "scaleY(2.5)";
-            setTimeout(() => { if(avatarMouth) avatarMouth.style.transform = "scaleY(1)"; }, 1500);
-
             isProcessing = false;
             typingIndicator.classList.add('hidden');
-            statusText.textContent = "متصل";
         }
 
-        function handleSend() {
-            const val = messageInput.value.trim();
-            if (val && !isProcessing) {
-                append('User', val);
-                messageInput.value = "";
-                processChat(val);
-            }
-        }
-
-        sendBtn.onclick = handleSend;
-        messageInput.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
+        sendBtn.onclick = () => { const t = messageInput.value.trim(); if (t) { append('User', t); messageInput.value = ""; processChat(t); } };
+        messageInput.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } };
         attachBtn.onclick = () => imageInput.click();
-        imageInput.onchange = () => append('AI', "وصلت الصورة يا فندم، ثواني هشوفها وأرد عليك.");
+        imageInput.onchange = () => { append('User', "📷 [صورة]"); processChat("", true); };
     </script>
 </body>
 </html>
