@@ -8,13 +8,12 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #0b141a; margin: 0; overflow: hidden; }
+        body { font-family: 'Cairo', sans-serif; background-color: #0b141a; margin: 0; overflow: hidden; touch-action: manipulation; }
         .chat-scroll::-webkit-scrollbar { width: 4px; }
         .chat-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 20px; }
         .avatar-float { animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-        #avatar-mouth { transform-origin: center 120px; transition: transform 0.05s; }
-        .btn-active:active { transform: scale(0.9); transition: 0.1s; }
+        #avatar-mouth { transform-origin: center 120px; transition: transform 0.1s; }
     </style>
 </head>
 <body class="h-[100dvh] w-full flex flex-col text-slate-100 bg-[#0b141a]">
@@ -22,12 +21,17 @@
     <input type="password" id="apiKey" value="AIzaSyAcKYoSB5EeovMe9xOB3C9wLvQqkppXnNs" class="hidden" />
 
     <header class="bg-slate-800 border-b border-slate-700 py-3 px-4 flex items-center gap-3 shadow-md shrink-0">
-        <div class="w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center avatar-float shadow-lg">
-            <i data-lucide="bot" class="text-white w-7 h-7"></i>
+        <div class="w-14 h-14 bg-sky-500 rounded-full flex items-center justify-center avatar-float shadow-lg">
+            <svg viewBox="0 0 200 200" class="w-10 h-10">
+                <rect x="55" y="30" width="90" height="100" rx="35" fill="#1e293b" stroke="#38bdf8" stroke-width="4"/>
+                <rect x="65" y="45" width="70" height="70" rx="20" fill="#020617"/>
+                <g fill="#10b981"><circle cx="85" cy="65" r="7" /><circle cx="115" cy="65" r="7" /></g>
+                <rect id="avatar-mouth" x="80" y="90" width="40" height="4" rx="2" fill="#10b981" />
+            </svg>
         </div>
         <div>
             <h1 class="text-sm font-bold text-white">بولا عماد <span class="text-emerald-400 text-[10px]">(مساعد ذكي)</span></h1>
-            <p id="statusText" class="text-slate-400 text-[10px]">متصل وجاهز لخدمتك</p>
+            <p id="statusText" class="text-slate-400 text-[10px]">متصل</p>
         </div>
     </header>
 
@@ -72,72 +76,64 @@
 
         let isProcessing = false;
 
-        // عقل المكتب (الردود المحلية السريعة)
         const STUDIO_DATA = {
-            prices: {
-                "تابلوه": "التابلوهات: 15*10 بـ 35ج، 21*15 بـ 65ج، 30*20 بـ 85ج، 40*30 بـ 135ج، 50*40 بـ 180ج، 60*50 بـ 225ج، 70*50 بـ 250ج، 90*60 بـ 400ج. مجمع صور 50*70 بـ 250ج.",
-                "مج": "المجات: أبيض 100ج، بايركس 85ج، سحري 150ج، حراري 200ج. (المج بياخد 3 صور).",
-                "صور": "الصور: 21*15 بـ 10ج، 30*20 بـ 40ج، 40*30 بـ 80ج، 50*40 بـ 120ج. صور 4*6 رسمية 50ج والمستعجل 70ج."
-            },
-            address: "العنوان: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد."
+            prices: "المجات: أبيض 100ج، بايركس 85ج، سحري 150ج. التابلوهات: تبدأ من 35ج لمقاس 10*15. العنوان: شارع صدقي بجوار الراعي. الحجز: 01285957035.",
+            info: "مكتب واستوديو بولا عماد متخصص في الطباعة والهدايا والتابلوهات."
         };
 
         function append(sender, text) {
             const div = document.createElement('div');
             div.className = `flex ${sender === 'User' ? 'justify-end' : 'justify-start'} mb-4`;
-            div.innerHTML = `<div class="p-3 px-4 rounded-2xl max-w-[85%] shadow-md ${sender === 'User' ? 'bg-emerald-700 text-white rounded-tl-none' : 'bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700 leading-relaxed'}">${text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-sky-400 underline">$1</a>')}</div>`;
+            div.innerHTML = `<div class="p-3 px-4 rounded-2xl max-w-[85%] text-[15px] shadow-md ${sender === 'User' ? 'bg-emerald-700 text-white rounded-tl-none' : 'bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700 leading-relaxed'}">${text}</div>`;
             chatContainer.appendChild(div);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         async function processChat(text) {
             if (isProcessing) return;
-            const cleanText = text.trim();
-            if (!cleanText || /^[\p{Emoji}\s]+$/u.test(cleanText)) return;
-
             isProcessing = true;
             typingIndicator.classList.remove('hidden');
-            statusText.textContent = "المساعد يكتب...";
+            statusText.textContent = "جاري الكتابة...";
 
             let responseText = "";
-            
-            // 1. محاكاة التفكير وجلب البيانات
-            try {
-                // فحص محلي أولاً
-                if (cleanText.includes("سعر") || cleanText.includes("بكام")) {
-                    for (let key in STUDIO_DATA.prices) { if (cleanText.includes(key)) responseText += STUDIO_DATA.prices[key] + " "; }
-                }
-                
-                if (!responseText) {
+            const lowerText = text.toLowerCase();
+
+            // 1. محاولة الرد من البيانات المحلية أولاً لضمان السرعة والدقة
+            if (lowerText.includes("سعر") || lowerText.includes("بكام") || lowerText.includes("مج") || lowerText.includes("تابلو")) {
+                responseText = STUDIO_DATA.prices;
+            } else if (lowerText.includes("عنوان") || lowerText.includes("فين")) {
+                responseText = "عنوانا: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد.";
+            } else if (lowerText.includes("خير") || lowerText.includes("سلام")) {
+                responseText = "أهلاً بيك يا فندم في مكتب بولا عماد، منورنا! أؤمرني أقدر أساعدك إزاي؟";
+            }
+
+            // 2. لو مفيش رد محلي، نكلم جوجل
+            if (!responseText) {
+                try {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: "أنت مساعد مكتب بولا عماد. رد بالمصري وباختصار شديد بناءً على العنوان: " + STUDIO_DATA.address + ". الرسالة: " + cleanText }] }] })
+                        body: JSON.stringify({ contents: [{ parts: [{ text: "أنت مساعد بشري لمكتب بولا عماد. رد بالمصري وباختصار شديد بناءً على: " + STUDIO_DATA.prices + ". الرسالة: " + text }] }] })
                     });
                     const data = await res.json();
                     responseText = data.candidates[0].content.parts[0].text;
+                } catch (e) {
+                    responseText = "تحت أمرك يا فندم، اسألني عن أسعار المجات أو التابلوهات أو العنوان وهفيدك فوراً.";
                 }
-            } catch (e) {
-                responseText = "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل.";
             }
 
-            // 2. محاكاة وقت الكتابة (الإنسان الطبيعي)
-            // هنخلي وقت الكتابة = عدد الحروف × 40 مللي ثانية (بحد أدنى ثانيتين وبحد أقصى 5 ثواني)
-            const typingTime = Math.min(Math.max(responseText.length * 40, 2000), 5000);
-            await new Promise(resolve => setTimeout(resolve, typingTime));
+            // 3. انتظار وقت الكتابة (ثانيتين)
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // 3. إظهار الرد ونطقه
             append('AI', responseText);
             
-            const utter = new SpeechSynthesisUtterance(responseText);
-            utter.lang = 'ar-EG';
-            utter.onstart = () => { avatarMouth.style.transform = "scaleY(2.5)"; };
-            utter.onend = () => { avatarMouth.style.transform = "scaleY(1)"; };
-            window.speechSynthesis.speak(utter);
+            // تحريك الفم
+            if(avatarMouth) avatarMouth.style.transform = "scaleY(2.5)";
+            setTimeout(() => { if(avatarMouth) avatarMouth.style.transform = "scaleY(1)"; }, 1500);
 
             isProcessing = false;
             typingIndicator.classList.add('hidden');
-            statusText.textContent = "متصل - جاهز لخدمتك";
+            statusText.textContent = "متصل";
         }
 
         function handleSend() {
@@ -145,7 +141,6 @@
             if (val && !isProcessing) {
                 append('User', val);
                 messageInput.value = "";
-                messageInput.style.height = 'auto';
                 processChat(val);
             }
         }
@@ -153,7 +148,7 @@
         sendBtn.onclick = handleSend;
         messageInput.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
         attachBtn.onclick = () => imageInput.click();
-        imageInput.onchange = () => append('AI', "انتظر سيتم الرد عليك فوراً من خلال فريق العمل.");
+        imageInput.onchange = () => append('AI', "وصلت الصورة يا فندم، ثواني هشوفها وأرد عليك.");
     </script>
 </body>
 </html>
