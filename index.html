@@ -7,15 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #0b141a; margin: 0; overflow: hidden; }
         .chat-scroll::-webkit-scrollbar { width: 4px; }
-        .chat-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        .avatar-float { animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        #avatar-mouth { transform-origin: center 120px; transition: transform 0.1s; }
-        /* تأثير عند الضغط على الزرار */
-        .btn-active:active { transform: scale(0.85); background-color: #059669; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 20px; }
+        .avatar-float { animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        #avatar-mouth { transform-origin: center 120px; transition: transform 0.05s; }
+        .btn-active:active { transform: scale(0.9); transition: 0.1s; }
     </style>
 </head>
 <body class="h-[100dvh] w-full flex flex-col text-slate-100 bg-[#0b141a]">
@@ -32,28 +31,30 @@
         </div>
     </header>
 
-    <main id="chatContainer" class="flex-1 overflow-y-auto chat-scroll p-4 space-y-4 max-w-2xl mx-auto w-full">
+    <main id="chatContainer" class="flex-1 overflow-y-auto chat-scroll p-4 space-y-4 max-w-2xl mx-auto w-full pb-6">
         <div class="flex justify-start">
-            <div class="bg-slate-800 p-3 rounded-2xl rounded-tr-none border border-slate-700 max-w-[85%] text-sm shadow-sm">
+            <div class="bg-slate-800 p-3 rounded-2xl rounded-tr-none border border-slate-700 max-w-[85%] text-[15px] shadow-sm leading-relaxed">
                 أهلاً بيك يا فندم في مكتب واستوديو بولا عماد. أقدر أساعدك إزاي؟ 🥰
             </div>
         </div>
     </main>
 
-    <div id="typingIndicator" class="hidden px-4 pb-2 max-w-2xl mx-auto w-full">
-        <div class="text-slate-500 text-[10px] animate-pulse">جاري الرد...</div>
+    <div id="typingIndicator" class="hidden px-4 pb-4 max-w-2xl mx-auto w-full">
+        <div class="bg-slate-800 w-16 p-3 rounded-2xl rounded-tr-none flex justify-center border border-slate-700">
+            <div class="flex gap-1"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span></div>
+        </div>
     </div>
 
-    <footer class="bg-slate-800 p-3 border-t border-slate-700 shrink-0">
-        <div class="max-w-2xl mx-auto flex items-center gap-2">
-            <button id="attachBtn" class="p-2.5 bg-slate-700 text-slate-300 rounded-full w-10 h-10 flex items-center justify-center"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
+    <footer class="bg-slate-800 p-3 border-t border-slate-700 shrink-0 z-50">
+        <div class="max-w-4xl mx-auto flex items-center gap-2">
+            <button id="attachBtn" class="p-2.5 bg-slate-700 text-slate-300 rounded-full w-12 h-12 flex items-center justify-center"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
             <input type="file" id="imageInput" accept="image/*" class="hidden" />
             
-            <div class="flex-1 bg-slate-900 rounded-xl border border-slate-600 focus-within:border-emerald-500 overflow-hidden">
-                <textarea id="messageInput" rows="1" class="w-full bg-transparent text-slate-100 p-3 focus:outline-none resize-none max-h-24 text-sm" placeholder="اكتب رسالتك..."></textarea>
+            <div class="flex-1 bg-slate-900 rounded-xl border-2 border-slate-600 focus-within:border-emerald-500 overflow-hidden shadow-inner">
+                <textarea id="messageInput" rows="1" class="w-full bg-transparent text-slate-100 p-3 focus:outline-none resize-none max-h-32 text-[16px]" placeholder="اكتب رسالتك هنا..."></textarea>
             </div>
 
-            <button id="sendBtn" class="btn-active p-3 bg-emerald-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
+            <button id="sendBtn" class="p-3 bg-emerald-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg active:scale-90 transition-transform">
                 <i data-lucide="send" class="w-6 h-6 rotate-180"></i>
             </button>
         </div>
@@ -71,62 +72,88 @@
 
         let isProcessing = false;
 
+        // عقل المكتب (الردود المحلية السريعة)
         const STUDIO_DATA = {
-            prices: "التابلوهات: 15*10 (35ج)، 21*15 (65ج)، 30*20 (85ج)، 40*30 (135ج). المجات: أبيض 100ج، بايركس 85ج، سحري 150ج. الصور: 21*15 بـ 10ج. العنوان: الاربعين - شارع صدقي.",
-            booking: "الحجز: شرفنا في المكتب أو كاش على 01285957035."
+            prices: {
+                "تابلوه": "التابلوهات: 15*10 بـ 35ج، 21*15 بـ 65ج، 30*20 بـ 85ج، 40*30 بـ 135ج، 50*40 بـ 180ج، 60*50 بـ 225ج، 70*50 بـ 250ج، 90*60 بـ 400ج. مجمع صور 50*70 بـ 250ج.",
+                "مج": "المجات: أبيض 100ج، بايركس 85ج، سحري 150ج، حراري 200ج. (المج بياخد 3 صور).",
+                "صور": "الصور: 21*15 بـ 10ج، 30*20 بـ 40ج، 40*30 بـ 80ج، 50*40 بـ 120ج. صور 4*6 رسمية 50ج والمستعجل 70ج."
+            },
+            address: "العنوان: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد."
         };
 
         function append(sender, text) {
             const div = document.createElement('div');
-            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`;
-            div.innerHTML = `<div class="p-3 rounded-2xl max-w-[90%] text-sm ${sender === 'user' ? 'bg-emerald-700 text-white' : 'bg-slate-800 border border-slate-700 text-slate-100'} shadow-md">${text}</div>`;
+            div.className = `flex ${sender === 'User' ? 'justify-end' : 'justify-start'} mb-4`;
+            div.innerHTML = `<div class="p-3 px-4 rounded-2xl max-w-[85%] shadow-md ${sender === 'User' ? 'bg-emerald-700 text-white rounded-tl-none' : 'bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700 leading-relaxed'}">${text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-sky-400 underline">$1</a>')}</div>`;
             chatContainer.appendChild(div);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        async function startChat() {
-            const val = messageInput.value.trim();
-            if (!val || isProcessing) return;
+        async function processChat(text) {
+            if (isProcessing) return;
+            const cleanText = text.trim();
+            if (!cleanText || /^[\p{Emoji}\s]+$/u.test(cleanText)) return;
 
             isProcessing = true;
-            append('user', val);
-            messageInput.value = "";
             typingIndicator.classList.remove('hidden');
+            statusText.textContent = "المساعد يكتب...";
 
-            // حماية للزرار: لو الـ AI اتأخر أكتر من 7 ثواني، بنفك الحظر عن الزرار
-            const safetyTimeout = setTimeout(() => { isProcessing = false; typingIndicator.classList.add('hidden'); }, 7000);
-
+            let responseText = "";
+            
+            // 1. محاكاة التفكير وجلب البيانات
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: "أنت مساعد مكتب بولا عماد. رد بالمصري وباختصار: " + STUDIO_DATA.prices + ". الرسالة: " + val }] }] })
-                });
-                const data = await res.json();
-                clearTimeout(safetyTimeout);
+                // فحص محلي أولاً
+                if (cleanText.includes("سعر") || cleanText.includes("بكام")) {
+                    for (let key in STUDIO_DATA.prices) { if (cleanText.includes(key)) responseText += STUDIO_DATA.prices[key] + " "; }
+                }
                 
-                const reply = data.candidates[0].content.parts[0].text;
-                append('ai', reply);
-                
-                // تحريك بسيط للفم عند الرد
-                if(avatarMouth) avatarMouth.style.transform = "scaleY(2)";
-                setTimeout(() => { if(avatarMouth) avatarMouth.style.transform = "scaleY(1)"; }, 1500);
-
+                if (!responseText) {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: "أنت مساعد مكتب بولا عماد. رد بالمصري وباختصار شديد بناءً على العنوان: " + STUDIO_DATA.address + ". الرسالة: " + cleanText }] }] })
+                    });
+                    const data = await res.json();
+                    responseText = data.candidates[0].content.parts[0].text;
+                }
             } catch (e) {
-                append('ai', "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل.");
-            } finally {
-                isProcessing = false;
-                typingIndicator.classList.add('hidden');
+                responseText = "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل.";
+            }
+
+            // 2. محاكاة وقت الكتابة (الإنسان الطبيعي)
+            // هنخلي وقت الكتابة = عدد الحروف × 40 مللي ثانية (بحد أدنى ثانيتين وبحد أقصى 5 ثواني)
+            const typingTime = Math.min(Math.max(responseText.length * 40, 2000), 5000);
+            await new Promise(resolve => setTimeout(resolve, typingTime));
+
+            // 3. إظهار الرد ونطقه
+            append('AI', responseText);
+            
+            const utter = new SpeechSynthesisUtterance(responseText);
+            utter.lang = 'ar-EG';
+            utter.onstart = () => { avatarMouth.style.transform = "scaleY(2.5)"; };
+            utter.onend = () => { avatarMouth.style.transform = "scaleY(1)"; };
+            window.speechSynthesis.speak(utter);
+
+            isProcessing = false;
+            typingIndicator.classList.add('hidden');
+            statusText.textContent = "متصل - جاهز لخدمتك";
+        }
+
+        function handleSend() {
+            const val = messageInput.value.trim();
+            if (val && !isProcessing) {
+                append('User', val);
+                messageInput.value = "";
+                messageInput.style.height = 'auto';
+                processChat(val);
             }
         }
 
-        // تشغيل الإرسال عند الضغط على الزرار أو الـ Enter
-        sendBtn.addEventListener('click', (e) => { e.preventDefault(); startChat(); });
-        messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); startChat(); } });
-
-        // زرار المرفقات
-        document.getElementById('attachBtn').onclick = () => document.getElementById('imageInput').click();
-        document.getElementById('imageInput').onchange = () => append('ai', "انتظر سيتم الرد عليك فوراً من خلال فريق العمل.");
+        sendBtn.onclick = handleSend;
+        messageInput.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
+        attachBtn.onclick = () => imageInput.click();
+        imageInput.onchange = () => append('AI', "انتظر سيتم الرد عليك فوراً من خلال فريق العمل.");
     </script>
 </body>
 </html>
