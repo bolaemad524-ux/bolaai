@@ -11,55 +11,34 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+        
         body {
             font-family: 'Cairo', sans-serif;
             background-color: #0b141a;
             margin: 0;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
         .chat-scroll::-webkit-scrollbar { width: 4px; }
-        .chat-scroll::-webkit-scrollbar-track { background: transparent; }
-        .chat-scroll::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 20px; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 20px; }
+
+        .avatar-float { animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        
+        #avatar-mouth { transform-origin: center 120px; transition: transform 0.05s ease-out; }
+        
+        .btn-click:active { transform: scale(0.9); transition: 0.1s; }
 
         .user-listening {
             animation: pulse-mic 1s infinite;
-            background-color: #ef4444 !important; 
-            color: white !important;
-            transform: scale(1.1);
+            background-color: #ef4444 !important;
         }
-
         @keyframes pulse-mic {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-
-        .typing-indicator span {
-            display: inline-block;
-            width: 6px; height: 6px;
-            background-color: #94a3b8;
-            border-radius: 50%;
-            margin: 0 2px;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-
-        .avatar-float { animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-        
-        .avatar-blink { transform-origin: center; animation: blink 5s infinite; }
-        @keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
-
-        #avatar-mouth { transform-origin: center 120px; transition: transform 0.05s ease-out; }
-        #avatar-arm-r { transform-origin: 30px 140px; transition: transform 0.1s ease-out; }
-        #avatar-arm-l { transform-origin: 170px 140px; transition: transform 0.1s ease-out; }
-        #avatar-eyes { transition: fill 0.3s; }
     </style>
 </head>
 <body class="h-[100dvh] w-full flex flex-col text-slate-100 bg-[#0b141a]">
@@ -68,8 +47,7 @@
 
     <header class="bg-slate-800 border-b border-slate-700 py-3 px-4 flex items-center justify-between shrink-0 z-20 shadow-md">
         <div class="flex items-center gap-4 w-full max-w-4xl mx-auto">
-            
-            <div class="w-16 h-16 shrink-0 relative flex justify-center items-center">
+            <div class="w-14 h-14 shrink-0 relative flex justify-center items-center">
                 <div id="avatarGlow" class="absolute inset-0 rounded-full border-2 border-transparent transition-all duration-300"></div>
                 <svg viewBox="0 0 200 200" class="w-full h-full avatar-float z-10">
                     <defs>
@@ -81,41 +59,42 @@
                     <path d="M50 140 L150 140 C 160 170, 150 200, 100 200 C 50 200, 40 170, 50 140 Z" fill="url(#bodyGrad)"/>
                     <rect x="55" y="30" width="90" height="100" rx="35" fill="url(#headGrad)" stroke="#38bdf8" stroke-width="4"/>
                     <rect x="65" y="45" width="70" height="70" rx="20" fill="#020617"/>
-                    <g id="avatar-eyes" fill="#10b981" class="avatar-blink"><circle cx="85" cy="65" r="7" /><circle cx="115" cy="65" r="7" /></g>
+                    <g fill="#10b981"><circle cx="85" cy="65" r="7" /><circle cx="115" cy="65" r="7" /></g>
                     <rect id="avatar-mouth" x="80" y="90" width="40" height="4" rx="2" fill="#10b981" />
                 </svg>
             </div>
-            
             <div class="flex-1">
-                <h1 class="text-lg font-bold text-white tracking-wide">بولا عماد <span class="text-emerald-400 text-sm">(مساعد ذكي)</span></h1>
-                <p id="statusText" class="text-slate-400 text-xs font-medium mt-1">متصل - جاهز لخدمتك</p>
+                <h1 class="text-base font-bold text-white">مساعد بولا عماد</h1>
+                <p id="statusText" class="text-slate-400 text-[10px] mt-0.5">متصل - جاهز لخدمتك</p>
             </div>
         </div>
     </header>
 
     <main id="chatContainer" class="flex-1 overflow-y-auto chat-scroll p-4 space-y-4 max-w-4xl mx-auto w-full pb-6">
         <div class="flex justify-start">
-            <div class="bg-slate-800 text-slate-100 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-md border border-slate-700 leading-relaxed">
+            <div class="bg-slate-800 text-slate-100 p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-md border border-slate-700 text-sm">
                 أهلاً بيك يا فندم في مكتب واستوديو بولا عماد. أقدر أساعدك إزاي النهاردة؟ 🥰
             </div>
         </div>
     </main>
 
     <div id="typingIndicator" class="hidden px-4 pb-4 max-w-4xl mx-auto w-full">
-        <div class="bg-slate-800 w-16 p-3 rounded-2xl rounded-tr-none flex justify-center border border-slate-700 shadow-md">
-            <div class="typing-indicator"><span></span><span></span><span></span></div>
+        <div class="bg-slate-800 w-12 p-2 rounded-2xl flex justify-center border border-slate-700">
+            <div class="flex gap-1"><span class="w-1 h-1 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span><span class="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span></div>
         </div>
     </div>
 
-    <footer class="bg-slate-800 p-3 md:p-4 shrink-0 border-t border-slate-700 shadow-lg relative z-50">
-        <div class="max-w-4xl mx-auto flex items-end gap-3">
-            <button id="attachBtn" class="p-3 bg-slate-700 text-slate-300 rounded-full w-12 h-12 flex items-center justify-center shadow-md"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
+    <footer class="bg-slate-800 p-3 shrink-0 border-t border-slate-700 shadow-lg z-50">
+        <div class="max-w-4xl mx-auto flex items-end gap-2">
+            <button id="attachBtn" class="btn-click p-3 bg-slate-700 text-slate-300 rounded-full w-11 h-11 flex items-center justify-center shadow-md"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
             <input type="file" id="imageInput" accept="image/*" class="hidden" />
-            <button id="micBtn" class="p-3 bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md"><i data-lucide="mic" class="w-6 h-6"></i></button>
-            <div class="flex-1 bg-slate-900 rounded-2xl border-2 border-slate-600 focus-within:border-emerald-500 overflow-hidden shadow-inner">
-                <textarea id="messageInput" rows="1" class="w-full bg-transparent text-slate-100 p-3 md:p-4 focus:outline-none resize-none max-h-32 chat-scroll text-[16px]" placeholder="اكتب رسالتك هنا..."></textarea>
+            
+            <div class="flex-1 bg-slate-900 rounded-xl border-2 border-slate-600 focus-within:border-emerald-500 overflow-hidden shadow-inner">
+                <textarea id="messageInput" rows="1" class="w-full bg-transparent text-slate-100 p-3 focus:outline-none resize-none max-h-32 chat-scroll text-sm" placeholder="اكتب رسالتك هنا..."></textarea>
             </div>
-            <button id="sendBtn" class="p-3 bg-emerald-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md disabled:opacity-50"><i data-lucide="send" class="w-6 h-6 rotate-180"></i></button>
+
+            <button id="micBtn" class="btn-click p-3 bg-blue-600 text-white rounded-full w-11 h-11 flex items-center justify-center shadow-md"><i data-lucide="mic" class="w-5 h-5"></i></button>
+            <button id="sendBtn" class="btn-click p-3 bg-emerald-600 text-white rounded-full w-11 h-11 flex items-center justify-center shadow-md"><i data-lucide="send" class="w-5 h-5 rotate-180"></i></button>
         </div>
     </footer>
 
@@ -131,59 +110,108 @@
         const statusText = document.getElementById('statusText');
         const apiKeyInput = document.getElementById('apiKey');
         const avatarMouth = document.getElementById('avatar-mouth');
-        const avatarArmL = document.getElementById('avatar-arm-l');
-        const avatarArmR = document.getElementById('avatar-arm-r');
-        const avatarEyes = document.getElementById('avatar-eyes');
         const avatarGlow = document.getElementById('avatarGlow');
 
         let isProcessing = false;
-        let waitMessageCount = 0;
-        let lastMessageTime = 0;
-        let lastUserMessage = "";
-        let isSpeaking = false;
-        let lipSyncInterval;
+        let waitCount = 0;
 
-        // --- TTS & Animation ---
-        function startAvatarSpeaking(text) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar-EG';
-            utterance.rate = 1.1;
-            utterance.onstart = () => {
-                isSpeaking = true;
-                statusText.textContent = "يتحدث الآن...";
-                statusText.className = "text-emerald-400 text-xs font-medium mt-1";
-                avatarGlow.classList.add('border-emerald-500', 'shadow-[0_0_15px_rgba(16,185,129,0.5)]');
-                lipSyncInterval = setInterval(() => {
-                    avatarMouth.style.transform = `scaleY(${1 + Math.random() * 2})`;
-                    const rot = Math.random() * 10;
-                    avatarArmL.style.transform = `rotate(${-rot}deg)`;
-                    avatarArmR.style.transform = `rotate(${rot}deg)`;
-                }, 100);
-            };
-            utterance.onend = () => stopAvatarSpeaking();
-            window.speechSynthesis.speak(utterance);
+        const STUDIO_DATA = {
+            prices: {
+                "تابلوه": "التابلوهات: 15*10 (35ج)، 21*15 (65ج)، 30*20 (85ج)، 40*30 (135ج)، 50*40 (180ج)، 60*50 (225ج)، 70*50 (250ج)، 90*60 (400ج). مجمع صور 50*70 بـ 250ج.",
+                "مج": "المجات: أبيض 100ج، بايركس 85ج، سحري 150ج، حراري 200ج. (المج بياخد 3 صور).",
+                "صور": "الصور: 21*15 بـ 10ج، 30*20 بـ 40ج، 40*30 بـ 80ج، 50*40 بـ 120ج. صور شخصية 50ج والمستعجل 70ج.",
+                "برواز": "البراويز: 21*15 بـ 80ج، 30*20 بـ 120ج، 40*30 بـ 180ج.",
+                "ميدالية": "ميداليات: فانوس صورتك 20ج، مستطيلة 25ج، نوت بوك 85ج.",
+                "سلسلة": "سلاسل وانسيالات (عيون، أونه) بـ 120ج.",
+                "محفظة": "محفظة (أسود/بني) 150ج، حفر فقط 40ج.",
+                "تصوير": "أبيض وأسود: نسخة 80 قرش، بطاقة 1.5ج. ليزر ألوان: 5ج."
+            },
+            address: "العنوان: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد.",
+            booking: "تأكيد الحجز: شرفنا في المكتب أو حول المبلغ فودافون كاش أو انستا باي على 01285957035 وصور الإيصال."
+        };
+
+        function appendMsg(sender, text) {
+            const div = document.createElement('div');
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`;
+            div.innerHTML = `<div class="p-3 px-4 rounded-2xl max-w-[85%] shadow-md ${sender === 'user' ? 'bg-emerald-700 text-white rounded-tl-none' : 'bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700'} text-sm">${text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-sky-400 underline">$1</a>')}</div>`;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function stopAvatarSpeaking() {
-            isSpeaking = false;
-            clearInterval(lipSyncInterval);
-            avatarMouth.style.transform = 'scaleY(1)';
-            avatarArmL.style.transform = 'rotate(0deg)';
-            avatarArmR.style.transform = 'rotate(0deg)';
-            avatarGlow.classList.remove('border-emerald-500', 'shadow-[0_0_15px_rgba(16,185,129,0.5)]');
-            resetStatusReady();
-        }
+        async function processChat(text) {
+            if (isProcessing) return;
+            const cleanText = text.trim();
+            if (!cleanText || /^[\p{Emoji}\s]+$/u.test(cleanText)) return;
 
-        function resetStatusReady() {
-            if(isProcessing) return;
+            isProcessing = true;
+            typingIndicator.classList.remove('hidden');
+            statusText.textContent = "يُفكر الآن...";
+
+            let response = "";
+            // الردود المحلية (عقل المساعد)
+            if (cleanText === "تمام") response = "تمام يا فندم 👍";
+            else if (cleanText.includes("انشاء الله") || cleanText.includes("ان شاء الله")) response = "باذن الله";
+            else if (cleanText.includes("عنوان") || cleanText.includes("مكانكم")) response = STUDIO_DATA.address;
+            else if (cleanText.includes("عرض") || cleanText.includes("عروض")) response = "العروض كلها على المتجر هنا: https://bolaemad524-ux.github.io/bolastore/8.html";
+            else if (cleanText.includes("بكام") || cleanText.includes("سعر") || cleanText.includes("أسعار")) {
+                for (let key in STUDIO_DATA.prices) { if (cleanText.includes(key)) response += STUDIO_DATA.prices[key] + "\n"; }
+            }
+
+            // لو مفيش رد محلي نكلم الـ AI
+            if (!response) {
+                try {
+                    const apiCall = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKeyInput.value}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            systemInstruction: { parts: [{ text: `أنت مساعد بشري لمكتب بولا عماد. رد بالمصري وباختصار بناءً على: ${JSON.stringify(STUDIO_DATA)}. لو سأل عن حاجة مش موجودة رد بـ "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل".` }] },
+                            contents: [{ parts: [{ text: cleanText }] }]
+                        })
+                    });
+                    const data = await apiCall.json();
+                    response = data.candidates[0].content.parts[0].text;
+                } catch (e) {
+                    if (waitCount < 2) { response = "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل."; waitCount++; }
+                }
+            }
+
+            if (response) {
+                appendMsg('ai', response);
+                const utter = new SpeechSynthesisUtterance(response);
+                utter.lang = 'ar-EG';
+                utter.onstart = () => { avatarGlow.classList.add('border-emerald-500'); avatarMouth.style.transform = "scaleY(2.5)"; };
+                utter.onend = () => { avatarGlow.classList.remove('border-emerald-500'); avatarMouth.style.transform = "scaleY(1)"; };
+                window.speechSynthesis.speak(utter);
+            }
+
+            isProcessing = false;
+            typingIndicator.classList.add('hidden');
             statusText.textContent = "متصل - جاهز لخدمتك";
-            statusText.className = "text-slate-400 text-xs font-medium mt-1";
-            avatarEyes.style.fill = "#10b981";
         }
 
-        function showTyping(show) {
-            if (show) {
-                typingIndicator.classList.remove('hidden');
-                
+        function handleSendAction() {
+            const val = messageInput.value.trim();
+            if (val && !isProcessing) {
+                appendMsg('user', val);
+                messageInput.value = "";
+                messageInput.style.height = 'auto';
+                processChat(val);
+            }
+        }
+
+        sendBtn.addEventListener('click', (e) => { e.preventDefault(); handleSendAction(); });
+        messageInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendAction(); } });
+        
+        attachBtn.addEventListener('click', () => imageInput.click());
+        imageInput.addEventListener('change', () => { appendMsg('ai', "انتظر سيتم الرد عليك بعد لحظات من خلال فريق العمل"); });
+
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ar-EG';
+        micBtn.addEventListener('click', () => { try { recognition.start(); } catch(e){} });
+        recognition.onstart = () => { micBtn.classList.add('user-listening'); statusText.textContent="اسمعك..."; };
+        recognition.onresult = (e) => { const t = e.results[0][0].transcript; appendMsg('user', "🎤 " + t); processChat(t); };
+        recognition.onend = () => { micBtn.classList.remove('user-listening'); statusText.textContent="متصل"; };
+    </script>
+</body>
+    </html>
+    
