@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>المساعد الذكي - بولا عماد</title>
+    <title>المساعد الذكي - مكتب بولا عماد</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -18,12 +18,10 @@
             overflow: hidden;
         }
 
-        /* Scrollbar */
         .chat-scroll::-webkit-scrollbar { width: 4px; }
         .chat-scroll::-webkit-scrollbar-track { background: transparent; }
         .chat-scroll::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 20px; }
 
-        /* Mic Listening Animation */
         .user-listening {
             animation: pulse-mic 1s infinite;
             background-color: #ef4444 !important; 
@@ -52,14 +50,12 @@
             40% { transform: scale(1); }
         }
 
-        /* Avatar CSS Animations */
         .avatar-float { animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
         
         .avatar-blink { transform-origin: center; animation: blink 5s infinite; }
         @keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
 
-        /* SVG Transforms for Lip Sync */
         #avatar-mouth { transform-origin: center 120px; transition: transform 0.05s ease-out; }
         #avatar-arm-r { transform-origin: 30px 140px; transition: transform 0.1s ease-out; }
         #avatar-arm-l { transform-origin: 170px 140px; transition: transform 0.1s ease-out; }
@@ -68,14 +64,13 @@
 </head>
 <body class="h-[100dvh] w-full flex flex-col text-slate-100 bg-[#0b141a]">
 
-    <input type="password" id="apiKey" value="حط_المفتاح_هنا" class="hidden" />
+    <input type="password" id="apiKey" value="AIzaSyAcKYoSB5EeovMe9xOB3C9wLvQqkppXnNs" class="hidden" />
 
     <header class="bg-slate-800 border-b border-slate-700 py-3 px-4 flex items-center justify-between shrink-0 z-20 shadow-md">
         <div class="flex items-center gap-4 w-full max-w-4xl mx-auto">
             
             <div class="w-16 h-16 shrink-0 relative flex justify-center items-center">
                 <div id="avatarGlow" class="absolute inset-0 rounded-full border-2 border-transparent transition-all duration-300"></div>
-                AIzaSyAcKYoSB5EeovMe9xOB3C9wLvQqkppXnNs
                 <svg viewBox="0 0 200 200" class="w-full h-full avatar-float z-10">
                     <defs>
                         <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38bdf8" /><stop offset="100%" stop-color="#0284c7" /></linearGradient>
@@ -92,9 +87,7 @@
             </div>
             
             <div class="flex-1">
-                <h1 class="text-lg font-bold text-white tracking-wide">
-                    بولا عماد <span class="text-emerald-400 text-sm">(مساعد ذكي)</span>
-                </h1>
+                <h1 class="text-lg font-bold text-white tracking-wide">بولا عماد <span class="text-emerald-400 text-sm">(مساعد ذكي)</span></h1>
                 <p id="statusText" class="text-slate-400 text-xs font-medium mt-1">متصل - جاهز لخدمتك</p>
             </div>
         </div>
@@ -102,8 +95,8 @@
 
     <main id="chatContainer" class="flex-1 overflow-y-auto chat-scroll p-4 space-y-4 max-w-4xl mx-auto w-full pb-6">
         <div class="flex justify-start">
-            <div class="bg-slate-800 text-slate-100 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-md border border-slate-700 leading-relaxed text-[15px]">
-                أهلاً بيك يا فندم في مكتب واستوديو بولا عماد. أقدر أساعدك إزاي النهاردة؟
+            <div class="bg-slate-800 text-slate-100 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-md border border-slate-700 leading-relaxed">
+                أهلاً بيك يا فندم في مكتب واستوديو بولا عماد. أقدر أساعدك إزاي النهاردة؟ 🥰
             </div>
         </div>
     </main>
@@ -128,7 +121,6 @@
 
     <script>
         lucide.createIcons();
-
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -194,116 +186,4 @@
         function showTyping(show) {
             if (show) {
                 typingIndicator.classList.remove('hidden');
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                statusText.textContent = "يُفكر ويكتب...";
-                statusText.className = "text-amber-400 text-xs font-medium mt-1";
-                avatarEyes.style.fill = "#38bdf8";
-            } else {
-                typingIndicator.classList.add('hidden');
-                resetStatusReady();
-            }
-        }
-
-        function appendMessage(sender, text) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `flex ${sender === 'User' ? 'justify-end' : 'justify-start'} mb-4`;
-            const bubble = document.createElement('div');
-            bubble.className = sender === 'User' ? 'p-3 px-4 rounded-2xl max-w-[85%] shadow-md whitespace-pre-wrap bg-emerald-700 text-white rounded-tl-none text-[15px]' : 'p-4 rounded-2xl max-w-[85%] shadow-md whitespace-pre-wrap bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700 leading-relaxed text-[15px]';
-            bubble.innerHTML = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-sky-400 underline font-medium">$1</a>');
-            msgDiv.appendChild(bubble);
-            chatContainer.appendChild(msgDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // --- عقل المكتب (الردود المحلية السريعة) ---
-        const STUDIO_DATA = {
-            prices: {
-                "تابلوه": "التابلوهات: 15*10 بـ 35ج، 21*15 بـ 65ج، 30*20 بـ 85ج، 40*30 بـ 135ج، 50*40 بـ 180ج، 60*50 بـ 225ج، 70*50 بـ 250ج، 90*60 بـ 400ج. مجمع صور 50*70 بـ 250ج.",
-                "برواز": "البراويز: 21*15 بـ 80ج، 30*20 بـ 120ج، 40*30 بـ 180ج.",
-                "مج": "المجات: أبيض 100ج، بايركس 85ج، سحري 150ج، حراري 200ج. (المج بياخد 3 صور).",
-                "صور": "الصور: 21*15 بـ 10ج، 30*20 بـ 40ج، 40*30 بـ 80ج، 50*40 بـ 120ج. صور 4*6 رسمية 50ج والمستعجل 70ج.",
-                "ميدالية": "ميداليات: فانوس 20ج، مستطيلة 25ج، نوت بوك 85ج.",
-                "محفظة": "محفظة (أسود/بني) 150ج، حفر فقط 40ج.",
-                "سلسلة": "سلاسل وانسيالات (عيون، أونه فضي/ذهبي) بـ 120ج لأي نوع.",
-                "تصوير": "أبيض وأسود: نسخة 80 قرش، بطاقة 1.5ج. ألوان ليزر: 5ج وللكميات 2ج."
-            },
-            address: "العنوان: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد.",
-            booking: "تأكيد الحجز: حد يشرفنا يقطع وصل في المكتب أو حول المبلغ فودافون كاش أو انستا باي على الرقم ده 01285957035 وصور الإيصال وابعتوا هنا."
-        };
-
-        const SYSTEM_PROMPT = `أنت مساعد خدمة عملاء بشري وحقيقي جداً تعمل في "مكتب واستوديو بولا عماد" للدعاية والإعلان والطباعة.
-ممنوع نهائياً تقول "لا يوجد رد" أو تعتذر تقنياً. لو حصل مشكلة رد بـ "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل".
-تحدث بالمصري فقط. الأسعار والعنوان: ${JSON.stringify(STUDIO_DATA)}`;
-
-        async function processLogic(userText, isImage = false) {
-            const cleanText = userText.trim();
-            if (!isImage && /^[\p{Emoji}\s]+$/u.test(cleanText)) return;
-            const now = Date.now();
-            if (cleanText === lastUserMessage && (now - lastMessageTime) < 60000) return;
-            lastUserMessage = cleanText; lastMessageTime = now;
-
-            showTyping(true); isProcessing = true;
-            let aiResponseText = "";
-            let shouldCallAPI = true;
-
-            // --- الفلترة المحلية ---
-            if (isImage) { aiResponseText = "انتظر سيتم الرد عليك بعد لحظات من خلال فريق العمل"; shouldCallAPI = false; }
-            else if (cleanText === "تمام") { aiResponseText = "تمام يا فندم 👍"; shouldCallAPI = false; }
-            else if (cleanText.includes("انشاء الله") || cleanText.includes("ان شاء الله")) { aiResponseText = "باذن الله"; shouldCallAPI = false; }
-            else if (cleanText.includes("عنوان") || cleanText.includes("فين")) { aiResponseText = STUDIO_DATA.address; shouldCallAPI = false; }
-            else if (cleanText.includes("عرض") || cleanText.includes("عروض")) { aiResponseText = "العروض كلها على المتجر الالكتروني ده يا فندم https://bolaemad524-ux.github.io/bolastore/8.html"; shouldCallAPI = false; }
-            
-            // بحث سريع في الأسعار
-            if (shouldCallAPI && (cleanText.includes("بكام") || cleanText.includes("سعر") || cleanText.includes("كام"))) {
-                for (let key in STUDIO_DATA.prices) {
-                    if (cleanText.includes(key)) { aiResponseText = STUDIO_DATA.prices[key]; shouldCallAPI = false; break; }
-                }
-            }
-
-            if (shouldCallAPI) aiResponseText = await fetchGeminiResponse(cleanText);
-
-            if (aiResponseText) {
-                appendMessage("AI", aiResponseText);
-                startAvatarSpeaking(aiResponseText);
-            }
-            isProcessing = false; showTyping(false);
-        }
-
-        async function fetchGeminiResponse(text) {
-            const apiKey = apiKeyInput.value;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                        contents: [{ parts: [{ text: text }] }]
-                    })
-                });
-                const data = await response.json();
-                if (data.error) return "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل";
-                return data.candidates[0].content.parts[0].text.trim();
-            } catch (e) {
-                return "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل";
-            }
-        }
-
-        // --- Event Listeners ---
-        sendBtn.addEventListener('click', () => { 
-            const t = messageInput.value.trim(); 
-            if(t && !isProcessing) { appendMessage("User", t); messageInput.value=""; processLogic(t); } 
-        });
-        messageInput.addEventListener('keypress', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
-        attachBtn.addEventListener('click', () => imageInput.click());
-        imageInput.addEventListener('change', () => { appendMessage("User", "📷 [صورة مرفقة]"); processLogic("", true); });
-        
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'ar-EG';
-        micBtn.addEventListener('click', () => { if(!isProcessing) try { recognition.start(); } catch(e){} });
-        recognition.onstart = () => { micBtn.classList.add('user-listening'); statusText.textContent="اسمعك..."; };
-        recognition.onresult = (e) => { const t = e.results[0][0].transcript; appendMessage("User", "🎤 " + t); processLogic(t); };
-        recognition.onend = () => { micBtn.classList.remove('user-listening'); resetStatusReady(); };
-    </script>
-</body>
-</html>
+                
