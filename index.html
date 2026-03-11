@@ -76,7 +76,7 @@
                     <i class="fas fa-robot text-sm"></i>
                 </div>
                 <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-gray-700 text-sm w-fit max-w-[85%]">
-                    أهلاً بك في مكتب <b>بولا عماد</b>! 👋<br>
+                    أهلاً بك في مكتب واستوديو <b>بولا عماد</b>! 👋<br>
                     أنا المساعد الذكي، اتكلم معايا براحتك وقولي بتدور على إيه.<br>
                     <span class="text-xs text-gray-500 mt-2 block">مثال: "عايز 3 مج سحري" أو "بكام التابلوه؟"</span>
                 </div>
@@ -315,26 +315,27 @@
         const stopWords = ['بكام', 'سعر', 'عايز', 'عاوز', 'لو', 'سمحت', 'كام', 'ايه', 'من', 'فضلك', 'عندكم', 'عندك', 'ب', 'جنيه', 'انا', 'محتاج', 'قطعة', 'قطع', 'حته'];
 
         function processInput(input) {
-            let normalizedInput = normalizeText(input);
+            // 1. فحص التحيات أولاً على النص الأصلي (مع توحيد الألف فقط لتجنب مشكلة الياء)
+            let checkText = input.replace(/[أإآ]/g, 'ا').trim();
 
-            // ====== جزء التحيات الجديد ======
-            if (normalizedInput === "صباح الخير" || normalizedInput.includes("صباح الفل") || normalizedInput.includes("صباح الورد")) {
-                return "صباح النور يا فندم! ☀️ نورت مكتب بولا عماد، أقدر أساعدك إزاي النهاردة؟";
+            if (checkText.includes("مساء الخير") || checkText.includes("مساء الفل")) {
+                return "مساء النور يا فندم، مكتب واستوديو بولا عماد معاك، أقدر أساعدك إزاي؟";
             }
-            if (normalizedInput === "مساء الخير" || normalizedInput.includes("مساء الفل") || normalizedInput.includes("مساء الورد")) {
-                return "مساء النور يا فندم! 🌙 نورت مكتب بولا عماد، أقدر أساعدك إزاي؟";
+            if (checkText.includes("صباح الخير") || checkText.includes("صباح الفل")) {
+                return "صباح الفل يا فندم، مكتب واستوديو بولا عماد معاك، أقدر أساعدك إزاي؟";
             }
-            if (normalizedInput.includes("السلام عليكم") || normalizedInput.includes("سلام عليكم")) {
-                return "وعليكم السلام ورحمة الله وبركاته يا فندم! 👋 تحت أمرك، بتدور على منتج إيه؟";
+            if (checkText.includes("السلام عليكم") || checkText.includes("سلام عليكم")) {
+                return "سلام ورحمه الله وبركاته، مكتب واستوديو بولا عماد معاك يا فندم، أقدر أساعدك إزاي؟";
             }
-            if (normalizedInput === "اهلا" || normalizedInput.includes("مرحبا") || normalizedInput === "مرحب" || normalizedInput === "اهلا بك" || normalizedInput === "اهلا بيك") {
-                return "أهلاً بيك يا فندم! 👋 نورتنا.. اكتب اسم الحاجه اللي بتدور عليها وهقولك سعرها على طول.";
+            if (checkText === "اهلا" || checkText.includes("مرحبا") || checkText.includes("اهلا بك") || checkText.includes("اهلا بيك")) {
+                return "أهلاً بيك يا فندم! 👋 نورت مكتب واستوديو بولا عماد.. اكتب اسم الحاجه اللي بتدور عليها وهقولك سعرها على طول.";
             }
-            if (normalizedInput === "ازيك" || normalizedInput.includes("عامل ايه") || normalizedInput.includes("اخبارك")) {
+            if (checkText === "ازيك" || checkText.includes("عامل ايه") || checkText.includes("اخبارك")) {
                 return "الحمد لله تمام يا فندم! دايماً في خدمتك 👋 أتمنى تكون بخير. أقدر أساعدك إزاي؟";
             }
-            // ================================
 
+            // 2. إذا لم تكن تحية، نكمل معالجة النص للبحث عن المنتجات
+            let normalizedInput = normalizeText(input);
             let quantity = 1;
             const numMatch = normalizedInput.match(/\d+/);
             if (numMatch) {
