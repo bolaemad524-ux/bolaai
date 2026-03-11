@@ -19,7 +19,7 @@
         }
 
         /* Scrollbar */
-        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar { width: 4px; }
         .chat-scroll::-webkit-scrollbar-track { background: transparent; }
         .chat-scroll::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 20px; }
 
@@ -53,24 +53,13 @@
         }
 
         /* Avatar CSS Animations */
-        .avatar-float {
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
+        .avatar-float { animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
         
-        .avatar-blink {
-            transform-origin: center;
-            animation: blink 5s infinite;
-        }
-        @keyframes blink {
-            0%, 95%, 100% { transform: scaleY(1); }
-            97% { transform: scaleY(0.1); }
-        }
+        .avatar-blink { transform-origin: center; animation: blink 5s infinite; }
+        @keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
 
-        /* SVG Transforms for Javascript */
+        /* SVG Transforms for Lip Sync */
         #avatar-mouth { transform-origin: center 120px; transition: transform 0.05s ease-out; }
         #avatar-arm-r { transform-origin: 30px 140px; transition: transform 0.1s ease-out; }
         #avatar-arm-l { transform-origin: 170px 140px; transition: transform 0.1s ease-out; }
@@ -79,45 +68,25 @@
 </head>
 <body class="h-[100dvh] w-full flex flex-col text-slate-100 bg-[#0b141a]">
 
-    <input type="password" id="apiKey" value="AIzaSyAcKYoSB5EeovMe9xOB3C9wLvQqkppXnNs" class="hidden" />
+    <input type="password" id="apiKey" value="حط_المفتاح_هنا" class="hidden" />
 
     <header class="bg-slate-800 border-b border-slate-700 py-3 px-4 flex items-center justify-between shrink-0 z-20 shadow-md">
         <div class="flex items-center gap-4 w-full max-w-4xl mx-auto">
             
             <div class="w-16 h-16 shrink-0 relative flex justify-center items-center">
                 <div id="avatarGlow" class="absolute inset-0 rounded-full border-2 border-transparent transition-all duration-300"></div>
-                
+                AIzaSyAcKYoSB5EeovMe9xOB3C9wLvQqkppXnNs
                 <svg viewBox="0 0 200 200" class="w-full h-full avatar-float z-10">
                     <defs>
-                        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#38bdf8" />
-                            <stop offset="100%" stop-color="#0284c7" />
-                        </linearGradient>
-                        <linearGradient id="headGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#1e293b" />
-                            <stop offset="100%" stop-color="#0f172a" />
-                        </linearGradient>
+                        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38bdf8" /><stop offset="100%" stop-color="#0284c7" /></linearGradient>
+                        <linearGradient id="headGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1e293b" /><stop offset="100%" stop-color="#0f172a" /></linearGradient>
                     </defs>
-                    
-                    <g id="avatar-arm-r">
-                        <path d="M50 140 C 20 150, 10 180, 20 210" fill="none" stroke="url(#bodyGrad)" stroke-width="14" stroke-linecap="round"/>
-                        <circle cx="20" cy="210" r="10" fill="#0ea5e9"/>
-                    </g>
-                    
-                    <g id="avatar-arm-l">
-                        <path d="M150 140 C 180 150, 190 180, 180 210" fill="none" stroke="url(#bodyGrad)" stroke-width="14" stroke-linecap="round"/>
-                        <circle cx="180" cy="210" r="10" fill="#0ea5e9"/>
-                    </g>
-
+                    <g id="avatar-arm-r"><path d="M50 140 C 20 150, 10 180, 20 210" fill="none" stroke="url(#bodyGrad)" stroke-width="14" stroke-linecap="round"/></g>
+                    <g id="avatar-arm-l"><path d="M150 140 C 180 150, 190 180, 180 210" fill="none" stroke="url(#bodyGrad)" stroke-width="14" stroke-linecap="round"/></g>
                     <path d="M50 140 L150 140 C 160 170, 150 200, 100 200 C 50 200, 40 170, 50 140 Z" fill="url(#bodyGrad)"/>
                     <rect x="55" y="30" width="90" height="100" rx="35" fill="url(#headGrad)" stroke="#38bdf8" stroke-width="4"/>
                     <rect x="65" y="45" width="70" height="70" rx="20" fill="#020617"/>
-                    
-                    <g id="avatar-eyes" fill="#10b981" class="avatar-blink">
-                        <circle cx="85" cy="65" r="7" />
-                        <circle cx="115" cy="65" r="7" />
-                    </g>
-                    
+                    <g id="avatar-eyes" fill="#10b981" class="avatar-blink"><circle cx="85" cy="65" r="7" /><circle cx="115" cy="65" r="7" /></g>
                     <rect id="avatar-mouth" x="80" y="90" width="40" height="4" rx="2" fill="#10b981" />
                 </svg>
             </div>
@@ -126,9 +95,7 @@
                 <h1 class="text-lg font-bold text-white tracking-wide">
                     بولا عماد <span class="text-emerald-400 text-sm">(مساعد ذكي)</span>
                 </h1>
-                <p id="statusText" class="text-slate-400 text-xs font-medium mt-1 transition-colors duration-300">
-                    متصل - جاهز لخدمتك
-                </p>
+                <p id="statusText" class="text-slate-400 text-xs font-medium mt-1">متصل - جاهز لخدمتك</p>
             </div>
         </div>
     </header>
@@ -147,26 +114,15 @@
         </div>
     </div>
 
-    <footer class="bg-slate-800 p-3 md:p-4 shrink-0 border-t border-slate-700 shadow-[0_-4px_15px_rgba(0,0,0,0.3)] relative z-50">
+    <footer class="bg-slate-800 p-3 md:p-4 shrink-0 border-t border-slate-700 shadow-lg relative z-50">
         <div class="max-w-4xl mx-auto flex items-end gap-3">
-            
-            <button id="attachBtn" class="p-3 bg-slate-700 text-slate-300 hover:text-white rounded-full transition-all duration-300 shrink-0 shadow-md flex items-center justify-center w-12 h-12" title="إرسال صورة">
-                <i data-lucide="paperclip" class="w-5 h-5"></i>
-            </button>
+            <button id="attachBtn" class="p-3 bg-slate-700 text-slate-300 rounded-full w-12 h-12 flex items-center justify-center shadow-md"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
             <input type="file" id="imageInput" accept="image/*" class="hidden" />
-
-            <button id="micBtn" class="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-500 transition-all duration-300 shrink-0 shadow-[0_4px_10px_rgba(37,99,235,0.4)] flex items-center justify-center w-12 h-12" title="تحدث بالصوت">
-                <i data-lucide="mic" class="w-6 h-6"></i>
-            </button>
-
-            <div class="flex-1 bg-slate-900 rounded-2xl overflow-hidden relative border-2 border-slate-600 focus-within:border-emerald-500 transition-colors shadow-inner flex items-center">
+            <button id="micBtn" class="p-3 bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md"><i data-lucide="mic" class="w-6 h-6"></i></button>
+            <div class="flex-1 bg-slate-900 rounded-2xl border-2 border-slate-600 focus-within:border-emerald-500 overflow-hidden shadow-inner">
                 <textarea id="messageInput" rows="1" class="w-full bg-transparent text-slate-100 p-3 md:p-4 focus:outline-none resize-none max-h-32 chat-scroll text-[16px]" placeholder="اكتب رسالتك هنا..."></textarea>
             </div>
-
-            <button id="sendBtn" class="p-3 bg-emerald-600 text-white rounded-full hover:bg-emerald-500 transition-all duration-300 shrink-0 shadow-[0_4px_10px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-12 h-12">
-                <i data-lucide="send" class="w-6 h-6 rotate-180"></i>
-            </button>
-            
+            <button id="sendBtn" class="p-3 bg-emerald-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md disabled:opacity-50"><i data-lucide="send" class="w-6 h-6 rotate-180"></i></button>
         </div>
     </footer>
 
@@ -182,8 +138,6 @@
         const typingIndicator = document.getElementById('typingIndicator');
         const statusText = document.getElementById('statusText');
         const apiKeyInput = document.getElementById('apiKey');
-
-        // Avatar SVG Elements
         const avatarMouth = document.getElementById('avatar-mouth');
         const avatarArmL = document.getElementById('avatar-arm-l');
         const avatarArmR = document.getElementById('avatar-arm-r');
@@ -197,34 +151,26 @@
         let isSpeaking = false;
         let lipSyncInterval;
 
-        // --- TTS & Avatar Animation Logic ---
+        // --- TTS & Animation ---
         function startAvatarSpeaking(text) {
             if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel(); 
-
+            window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar-EG'; 
+            utterance.lang = 'ar-EG';
             utterance.rate = 1.1;
-
             utterance.onstart = () => {
                 isSpeaking = true;
                 statusText.textContent = "يتحدث الآن...";
-                statusText.classList.replace('text-slate-400', 'text-emerald-400');
+                statusText.className = "text-emerald-400 text-xs font-medium mt-1";
                 avatarGlow.classList.add('border-emerald-500', 'shadow-[0_0_15px_rgba(16,185,129,0.5)]');
-                avatarEyes.style.fill = "#10b981";
-                
                 lipSyncInterval = setInterval(() => {
-                    const randomScale = 1 + Math.random() * 2; 
-                    const randomArm = Math.random() * 10;
-                    avatarMouth.style.transform = `scaleY(${randomScale})`;
-                    avatarArmL.style.transform = `rotate(${-randomArm}deg)`;
-                    avatarArmR.style.transform = `rotate(${randomArm}deg)`;
+                    avatarMouth.style.transform = `scaleY(${1 + Math.random() * 2})`;
+                    const rot = Math.random() * 10;
+                    avatarArmL.style.transform = `rotate(${-rot}deg)`;
+                    avatarArmR.style.transform = `rotate(${rot}deg)`;
                 }, 100);
             };
-
             utterance.onend = () => stopAvatarSpeaking();
-            utterance.onerror = () => stopAvatarSpeaking();
-
             window.speechSynthesis.speak(utterance);
         }
 
@@ -241,8 +187,8 @@
         function resetStatusReady() {
             if(isProcessing) return;
             statusText.textContent = "متصل - جاهز لخدمتك";
-            statusText.className = "text-slate-400 text-xs font-medium mt-1 transition-colors duration-300";
-            avatarEyes.style.fill = "#10b981"; 
+            statusText.className = "text-slate-400 text-xs font-medium mt-1";
+            avatarEyes.style.fill = "#10b981";
         }
 
         function showTyping(show) {
@@ -250,245 +196,114 @@
                 typingIndicator.classList.remove('hidden');
                 chatContainer.scrollTop = chatContainer.scrollHeight;
                 statusText.textContent = "يُفكر ويكتب...";
-                statusText.classList.replace('text-slate-400', 'text-amber-400');
-                avatarEyes.style.fill = "#38bdf8"; 
+                statusText.className = "text-amber-400 text-xs font-medium mt-1";
+                avatarEyes.style.fill = "#38bdf8";
             } else {
                 typingIndicator.classList.add('hidden');
                 resetStatusReady();
             }
         }
 
-        // --- UI Interactions ---
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight < 120 ? this.scrollHeight : 120) + 'px';
-            if(this.value.trim() !== '') {
-                sendBtn.disabled = false;
-                sendBtn.classList.remove('opacity-50');
-            } else {
-                sendBtn.disabled = true;
-                sendBtn.classList.add('opacity-50');
-            }
-        });
-
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSendText();
-            }
-        });
-
-        sendBtn.addEventListener('click', handleSendText);
-
-        function handleSendText() {
-            const text = messageInput.value.trim();
-            if (!text || isProcessing) return;
-
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            sendBtn.disabled = true;
-            sendBtn.classList.add('opacity-50');
-
-            appendMessage("User", text);
-            processLogic(text, false);
-        }
-
-        attachBtn.addEventListener('click', () => imageInput.click());
-        imageInput.addEventListener('change', (e) => {
-            if(e.target.files.length > 0) {
-                appendMessage("User", "📷 [صورة مرفقة]");
-                processLogic("[صورة مرفقة]", true);
-                imageInput.value = ''; 
-            }
-        });
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition = null;
-
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.lang = 'ar-EG'; 
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onstart = function() {
-                if(!isProcessing) {
-                    micBtn.classList.add('user-listening');
-                    statusText.textContent = "جاري الاستماع... تحدث الآن";
-                    statusText.classList.replace('text-slate-400', 'text-sky-400');
-                    if(window.speechSynthesis) window.speechSynthesis.cancel();
-                    stopAvatarSpeaking();
-                }
-            };
-
-            recognition.onresult = function(event) {
-                const speechResult = event.results[0][0].transcript;
-                micBtn.classList.remove('user-listening');
-                appendMessage("User", `🎤 ${speechResult}`);
-                processLogic(speechResult, false);
-            };
-
-            recognition.onerror = function(event) {
-                micBtn.classList.remove('user-listening');
-                statusText.textContent = "حدث خطأ أو المتصفح يمنع المايكروفون.";
-                statusText.classList.replace('text-sky-400', 'text-red-400');
-                setTimeout(resetStatusReady, 4000);
-            };
-
-            recognition.onend = function() {
-                micBtn.classList.remove('user-listening');
-            };
-        }
-
-        micBtn.addEventListener('click', () => {
-            if (isProcessing) return;
-            if (!recognition) {
-                alert("المتصفح لا يدعم تسجيل الصوت المباشر. يرجى الكتابة.");
-                return;
-            }
-            try { recognition.start(); } catch (e) { }
-        });
-
         function appendMessage(sender, text) {
             const msgDiv = document.createElement('div');
-            msgDiv.className = `flex ${sender === 'User' ? 'justify-end' : 'justify-start'} mb-4 opacity-0 transition-opacity duration-300`;
-            
+            msgDiv.className = `flex ${sender === 'User' ? 'justify-end' : 'justify-start'} mb-4`;
             const bubble = document.createElement('div');
-            if (sender === 'User') {
-                bubble.className = 'p-3 px-4 rounded-2xl max-w-[85%] shadow-md whitespace-pre-wrap bg-emerald-700 text-white rounded-tl-none text-[15px]';
-                bubble.textContent = text;
-            } else {
-                bubble.className = 'p-4 rounded-2xl max-w-[85%] shadow-md whitespace-pre-wrap bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700 leading-relaxed text-[15px]';
-                const formattedText = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-sky-400 underline font-medium">$1</a>');
-                bubble.innerHTML = formattedText;
-            }
-            
+            bubble.className = sender === 'User' ? 'p-3 px-4 rounded-2xl max-w-[85%] shadow-md whitespace-pre-wrap bg-emerald-700 text-white rounded-tl-none text-[15px]' : 'p-4 rounded-2xl max-w-[85%] shadow-md whitespace-pre-wrap bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700 leading-relaxed text-[15px]';
+            bubble.innerHTML = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-sky-400 underline font-medium">$1</a>');
             msgDiv.appendChild(bubble);
             chatContainer.appendChild(msgDiv);
-            
-            setTimeout(() => msgDiv.classList.remove('opacity-0'), 10);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // --- Core Rules & Logic ---
-        const SYSTEM_PROMPT = `أنت مساعد خدمة عملاء بشري وحقيقي جداً تعمل في "مكتب واستوديو بولا عماد" للدعاية والإعلان والطباعة. اسمك "مساعد بولا". يجب أن تتحدث وتتصرف كأنك إنسان مصري شاطر في المبيعات، ودود، وتفهم العميل بذكاء ولا ترد بطريقة آلية أو كأنك روبوت.
-الردود يجب أن تكون طبيعية ومباشرة من القائمة المتاحة لك.
+        // --- عقل المكتب (الردود المحلية السريعة) ---
+        const STUDIO_DATA = {
+            prices: {
+                "تابلوه": "التابلوهات: 15*10 بـ 35ج، 21*15 بـ 65ج، 30*20 بـ 85ج، 40*30 بـ 135ج، 50*40 بـ 180ج، 60*50 بـ 225ج، 70*50 بـ 250ج، 90*60 بـ 400ج. مجمع صور 50*70 بـ 250ج.",
+                "برواز": "البراويز: 21*15 بـ 80ج، 30*20 بـ 120ج، 40*30 بـ 180ج.",
+                "مج": "المجات: أبيض 100ج، بايركس 85ج، سحري 150ج، حراري 200ج. (المج بياخد 3 صور).",
+                "صور": "الصور: 21*15 بـ 10ج، 30*20 بـ 40ج، 40*30 بـ 80ج، 50*40 بـ 120ج. صور 4*6 رسمية 50ج والمستعجل 70ج.",
+                "ميدالية": "ميداليات: فانوس 20ج، مستطيلة 25ج، نوت بوك 85ج.",
+                "محفظة": "محفظة (أسود/بني) 150ج، حفر فقط 40ج.",
+                "سلسلة": "سلاسل وانسيالات (عيون، أونه فضي/ذهبي) بـ 120ج لأي نوع.",
+                "تصوير": "أبيض وأسود: نسخة 80 قرش، بطاقة 1.5ج. ألوان ليزر: 5ج وللكميات 2ج."
+            },
+            address: "العنوان: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد.",
+            booking: "تأكيد الحجز: حد يشرفنا يقطع وصل في المكتب أو حول المبلغ فودافون كاش أو انستا باي على الرقم ده 01285957035 وصور الإيصال وابعتوا هنا."
+        };
 
-قواعد هامة لعدم الإزعاج:
-لو عميل بعتلك وقال لك فى عروض ارسل له هذه الرساله (العروض كلها على المتجر الالكتروني ده يا فندم https://bolaemad524-ux.github.io/bolastore/8.html)
-تفاعلات الايموجى لا ترد عليها.
-عايز اى عميل يبعت اى صوره يترسله الرساله دى (انتظر سيتم الرد عليك بعد لحظات من خلال فريق العمل)
-إذا كانت رسالة العميل تحتوي على (إيموشن فقط) مثل لايك أو قلب أو أي ملصق، لا ترد نهائياً.
-إذا قال العميل كلمة "تمام" فقط، رد بكلمة "تمام يا فندم 👍" واعتبر أن العميل أنهى المحادثة بعدها.
-إذا قال العميل "انشاء الله"، رد بكلمة "باذن الله".
-لا تكرر نفس الرد للعميل إذا قام بإرسال أكثر من رسالة في نفس الدقيقة.
-قاعدة تكرار رسالة الانتظار: رسالة "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل" تُرسل بحد أقصى مرتين فقط خلال المحادثة الواحدة إذا تكرر سبب إرسالها.
-ممنوع نهائياً إرسال كلمة "لا يوجد رد" أو أي رسائل اعتذار تقنية.
-
-قواعد الترحيب الذكي (أول المحادثة):
-إذا قال العميل "مساء الخير": رد بـ "مساء النور يا فندم، مكتب واستوديو بولا عماد معاك، أقدر أساعدك إزاي؟"
-إذا قال العميل "صباح الخير": رد بـ "صباح الفل يا فندم، مكتب واستوديو بولا عماد معاك، أقدر أساعدك إزاي؟"
-إذا قال العميل "السلام عليكم" أو "سلام عليكم": رد بـ "سلام ورحمه الله وبركاته، مكتب واستوديو بولا عماد معاك يا فندم، أقدر أساعدك إزاي؟"
-
-قائمة أسعار منتجاتنا وخدماتنا:
-التابلوهات: 15*10 بـ 35 ج / 21*15 بـ 65 ج / 30*20 بـ 85 ج / 40*30 بـ 135 ج / 50*40 بـ 180 ج / 60*50 بـ 225 ج / 70*50 بـ 250 ج / 90*60 بـ 400 ج / تابلوه 50x70 مجمع صور بـ 250 ج.
-البراويز: 21*15 بـ 80 ج / 30*20 بـ 120 ج / 40*30 بـ 180 ج.
-المجات والأدوات الحرارية: مج أبيض بـ 100 ج / مج بايركس بـ 85 ج / مج سحري بـ 150 ج / مج حراري بـ 200 ج.
-طباعة الصور: 21*15 بـ 10 ج / 30*20 بـ 40 ج / 40*30 بـ 80 ج / 50*40 بـ 120 ج / 60*50 بـ 180 ج / 70*50 بـ 220 ج / 90*60 بـ 300 ج.
-الكروت: مقاس أقل من 10*10 بـ 3.5 ج / مقاس 10*10 بـ 4 ج / مقاس 15*10 بـ 5 ج / مقاس 21*15 بـ 10 ج.
-الصور الشخصية 4*6: الرسمية بـ 50 ج / المستعجل بـ 70 ج.
-الإكسسوارات والهدايا: ميداليات (فانوس بصورتك 20 ج / مستطيلة 25 ج / نوت بوك 85 ج). سلاسل وانسيالات (120 ج لأي نوع): سلسلة عيون، اونه فضي، اونه ذهبي، دمت لي خير سند، انسيال عيون. محافظ: (أسود/بني) 150 ج / حفر فقط 40 ج. هدايا أخرى: قلم مضيء 50 ج / سناده 50 ج / جراب 70 ج / فينيل 75 ج / منديل كتب كتاب 100 ج / ساعة 200 ج / مرايه سحريه 200 ج / فانوس 250 ج.
-الطباعة والتصوير (A4): أبيض وأسود: نسخ 80 قرشا / بطاقة 1.5 ج / وش وضهر 1.5 ج / طباعة 80 قرشا. ألوان ليزر: قطاعي 5 ج / كميات (50+) بـ 2 ج. (A3): ألوان قطاعي 10 ج / كميات 7 ج / طباعة ألوان A3 بـ 25 ج.
-
-تعليمات هامة للرد:
-قاعدة صارمة: ممنوع نهائياً أن تقول "غير متوفر" أو "مش متاح". إذا سألك العميل عن تفاصيل غير موجودة، رد بـ: "انتظر وسيتم الرد عليك فى اقرب وقت من فريق العمل".
-تأكيد الحجز: "تمام يا فندم استاذنك بس حد يجى يقطع وصل فى المكتب ... او يحول المبلغ من اى مكنه فورى على رقم المحفظه ده أو انستا باى 01285957035 ويصور ايصال الدفع ويرسلو هنا".
-العنوان: الاربعين – شارع صدقي - بجوار محل الراعى للكهرباء - أمام أشرف فاروق للحدايد.
-شكر العميل: "مكانك يا فندم تحت امرك 🥰"
-عدد الصور: المج (3 صور) / الميدالية (2 صور) / نوت بوك ميدالية (16 صورة) / الفانوس (3 صور) / تابلوه عادي (15-25 صورة).`;
-
-        function getWaitMessage() {
-            if (waitMessageCount >= 2) return null; 
-            waitMessageCount++;
-            return "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل";
-        }
+        const SYSTEM_PROMPT = `أنت مساعد خدمة عملاء بشري وحقيقي جداً تعمل في "مكتب واستوديو بولا عماد" للدعاية والإعلان والطباعة.
+ممنوع نهائياً تقول "لا يوجد رد" أو تعتذر تقنياً. لو حصل مشكلة رد بـ "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل".
+تحدث بالمصري فقط. الأسعار والعنوان: ${JSON.stringify(STUDIO_DATA)}`;
 
         async function processLogic(userText, isImage = false) {
             const cleanText = userText.trim();
-
-            const emojiRegex = /^[\p{Emoji}\s]+$/u;
-            if (!isImage && emojiRegex.test(cleanText)) return; 
-
+            if (!isImage && /^[\p{Emoji}\s]+$/u.test(cleanText)) return;
             const now = Date.now();
-            if (cleanText === lastUserMessage && (now - lastMessageTime) < 60000) return; 
-            lastUserMessage = cleanText;
-            lastMessageTime = now;
+            if (cleanText === lastUserMessage && (now - lastMessageTime) < 60000) return;
+            lastUserMessage = cleanText; lastMessageTime = now;
 
-            showTyping(true);
-            isProcessing = true;
-
+            showTyping(true); isProcessing = true;
             let aiResponseText = "";
             let shouldCallAPI = true;
 
-            if (isImage) {
-                aiResponseText = "انتظر سيتم الرد عليك بعد لحظات من خلال فريق العمل";
-                shouldCallAPI = false;
-            } else if (cleanText === "تمام" || cleanText === "طمام") {
-                aiResponseText = "تمام يا فندم 👍";
-                shouldCallAPI = false;
-            } else if (cleanText.includes("انشاء الله") || cleanText.includes("ان شاء الله") || cleanText.includes("ان شاءالله")) {
-                aiResponseText = "باذن الله";
-                shouldCallAPI = false;
+            // --- الفلترة المحلية ---
+            if (isImage) { aiResponseText = "انتظر سيتم الرد عليك بعد لحظات من خلال فريق العمل"; shouldCallAPI = false; }
+            else if (cleanText === "تمام") { aiResponseText = "تمام يا فندم 👍"; shouldCallAPI = false; }
+            else if (cleanText.includes("انشاء الله") || cleanText.includes("ان شاء الله")) { aiResponseText = "باذن الله"; shouldCallAPI = false; }
+            else if (cleanText.includes("عنوان") || cleanText.includes("فين")) { aiResponseText = STUDIO_DATA.address; shouldCallAPI = false; }
+            else if (cleanText.includes("عرض") || cleanText.includes("عروض")) { aiResponseText = "العروض كلها على المتجر الالكتروني ده يا فندم https://bolaemad524-ux.github.io/bolastore/8.html"; shouldCallAPI = false; }
+            
+            // بحث سريع في الأسعار
+            if (shouldCallAPI && (cleanText.includes("بكام") || cleanText.includes("سعر") || cleanText.includes("كام"))) {
+                for (let key in STUDIO_DATA.prices) {
+                    if (cleanText.includes(key)) { aiResponseText = STUDIO_DATA.prices[key]; shouldCallAPI = false; break; }
+                }
             }
 
-            if (shouldCallAPI) {
-                aiResponseText = await fetchGeminiResponse(cleanText);
-            }
+            if (shouldCallAPI) aiResponseText = await fetchGeminiResponse(cleanText);
 
             if (aiResponseText) {
                 appendMessage("AI", aiResponseText);
                 startAvatarSpeaking(aiResponseText);
             }
-            
-            isProcessing = false;
-            showTyping(false);
+            isProcessing = false; showTyping(false);
         }
 
         async function fetchGeminiResponse(text) {
             const apiKey = apiKeyInput.value;
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, 
+                        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
                         contents: [{ parts: [{ text: text }] }]
                     })
                 });
-                
                 const data = await response.json();
-                
-                if (data.error) {
-                    return "عذراً، يوجد خطأ في مفتاح التشغيل (API) أو الاتصال بالخادم. برجاء المراجعة.";
-                }
-
-                if (data.candidates && data.candidates[0].content) {
-                    let reply = data.candidates[0].content.parts[0].text.trim();
-                    if (reply.includes("انتظر سيتم الرد عليك")) return getWaitMessage();
-                    return reply;
-                } else {
-                    return getWaitMessage(); 
-                }
+                if (data.error) return "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل";
+                return data.candidates[0].content.parts[0].text.trim();
             } catch (e) {
-                return "عفواً، المتصفح يمنع الاتصال بالإنترنت. يرجى رفع الملف على استضافة لتجربته بنجاح."; 
+                return "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل";
             }
         }
+
+        // --- Event Listeners ---
+        sendBtn.addEventListener('click', () => { 
+            const t = messageInput.value.trim(); 
+            if(t && !isProcessing) { appendMessage("User", t); messageInput.value=""; processLogic(t); } 
+        });
+        messageInput.addEventListener('keypress', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
+        attachBtn.addEventListener('click', () => imageInput.click());
+        imageInput.addEventListener('change', () => { appendMessage("User", "📷 [صورة مرفقة]"); processLogic("", true); });
+        
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ar-EG';
+        micBtn.addEventListener('click', () => { if(!isProcessing) try { recognition.start(); } catch(e){} });
+        recognition.onstart = () => { micBtn.classList.add('user-listening'); statusText.textContent="اسمعك..."; };
+        recognition.onresult = (e) => { const t = e.results[0][0].transcript; appendMessage("User", "🎤 " + t); processLogic(t); };
+        recognition.onend = () => { micBtn.classList.remove('user-listening'); resetStatusReady(); };
     </script>
 </body>
 </html>
-
-
-
-
