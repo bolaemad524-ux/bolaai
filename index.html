@@ -2,151 +2,496 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مساعد مكتب بولا عماد</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد مكتب بولا عماد - النسخة الذكية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #0b141a; margin: 0; overflow: hidden; touch-action: manipulation; }
-        .chat-scroll::-webkit-scrollbar { width: 4px; }
-        .chat-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 20px; }
-        .avatar-float { animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-        #avatar-mouth { transform-origin: center 120px; transition: transform 0.1s; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .chat-container {
+            height: calc(100vh - 4rem);
+        }
+        .message-enter {
+            animation: slideIn 0.3s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* مؤشر السلة */
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
-<body class="h-[100dvh] w-full flex flex-col text-slate-100 bg-[#0b141a]">
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-2 sm:p-4 relative">
 
-    <input type="password" id="apiKey" value="AIzaSyAcKYoSB5EeovMe9xOB3C9wLvQqkppXnNs" class="hidden" />
-
-    <header class="bg-slate-800 border-b border-slate-700 py-3 px-4 flex items-center gap-3 shadow-md shrink-0">
-        <div class="w-14 h-14 bg-sky-500 rounded-full flex items-center justify-center avatar-float shadow-lg">
-            <svg viewBox="0 0 200 200" class="w-10 h-10">
-                <rect x="55" y="30" width="90" height="100" rx="35" fill="#1e293b" stroke="#38bdf8" stroke-width="4"/>
-                <rect x="65" y="45" width="70" height="70" rx="20" fill="#020617"/>
-                <g fill="#10b981"><circle cx="85" cy="65" r="7" /><circle cx="115" cy="65" r="7" /></g>
-                <rect id="avatar-mouth" x="80" y="90" width="40" height="4" rx="2" fill="#10b981" />
-            </svg>
-        </div>
-        <div>
-            <h1 class="text-sm font-bold text-white">بولا عماد <span class="text-emerald-400 text-[10px]">(مساعد ذكي)</span></h1>
-            <p id="statusText" class="text-slate-400 text-[10px]">متصل</p>
-        </div>
-    </header>
-
-    <main id="chatContainer" class="flex-1 overflow-y-auto chat-scroll p-4 space-y-4 max-w-2xl mx-auto w-full pb-6">
-        <div class="flex justify-start">
-            <div class="bg-slate-800 p-3 rounded-2xl rounded-tr-none border border-slate-700 max-w-[85%] text-[15px] shadow-sm leading-relaxed">
-                أهلاً بيك يا فندم في مكتب واستوديو بولا عماد. أقدر أساعدك إزاي؟ 🥰
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col chat-container">
+        
+        <div class="bg-indigo-600 text-white p-4 flex items-center justify-between shadow-md z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-inner">
+                    <i class="fas fa-brain text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">مساعد بولا عماد</h1>
+                    <p class="text-xs text-indigo-200">يفهم لغتك العادية بدون تعقيد</p>
+                </div>
+            </div>
+            <div class="flex gap-4 items-center">
+                <button onclick="toggleCart()" class="text-white relative hover:text-indigo-200 transition" title="سلة المشتريات">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="cart-count" class="cart-badge hidden">0</span>
+                </button>
+                <button onclick="clearChat()" class="text-indigo-200 hover:text-white transition" title="مسح المحادثة">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
         </div>
-    </main>
 
-    <div id="typingIndicator" class="hidden px-4 pb-4 max-w-2xl mx-auto w-full">
-        <div class="bg-slate-800 w-16 p-3 rounded-2xl rounded-tr-none flex justify-center border border-slate-700 shadow-md">
-            <div class="flex gap-1"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span></div>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 bg-gray-50">
+            <div class="flex gap-2 message-enter">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600">
+                    <i class="fas fa-robot text-sm"></i>
+                </div>
+                <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-gray-700 text-sm w-fit max-w-[85%]">
+                    أهلاً بك في مكتب <b>بولا عماد</b>! 👋<br>
+                    أنا المساعد الذكي، اتكلم معايا براحتك وقولي بتدور على إيه.<br>
+                    <span class="text-xs text-gray-500 mt-2 block">مثال: "عايز 3 مج سحري" أو "بكام التابلوه؟"</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3 bg-white border-t border-gray-200">
+            <form id="chat-form" class="flex gap-2 relative">
+                <input type="text" id="user-input" 
+                    class="flex-1 bg-gray-100 border-0 rounded-full py-3 px-5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition" 
+                    placeholder="اكتب سؤالك هنا بالعامية..." autocomplete="off">
+                <button type="submit" 
+                    class="bg-indigo-600 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-indigo-700 transition shadow-md flex-shrink-0">
+                    <i class="fas fa-paper-plane rotate-180 rtl:rotate-0"></i>
+                </button>
+            </form>
         </div>
     </div>
 
-    <footer class="bg-slate-800 p-3 border-t border-slate-700 shrink-0 z-50">
-        <div class="max-w-4xl mx-auto flex items-center gap-2">
-            <button id="attachBtn" class="p-2.5 bg-slate-700 text-slate-300 rounded-full w-12 h-12 flex items-center justify-center"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
-            <input type="file" id="imageInput" accept="image/*" class="hidden" />
-            
-            <div class="flex-1 bg-slate-900 rounded-xl border-2 border-slate-600 focus-within:border-emerald-500 overflow-hidden shadow-inner">
-                <textarea id="messageInput" rows="1" class="w-full bg-transparent text-slate-100 p-3 focus:outline-none resize-none max-h-32 text-[16px]" placeholder="اكتب رسالتك هنا..."></textarea>
+    <div id="cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="p-4 bg-indigo-50 border-b flex justify-between items-center">
+                <h2 class="font-bold text-lg text-indigo-800"><i class="fas fa-shopping-cart ml-2"></i>سلة المشتريات</h2>
+                <button onclick="toggleCart()" class="text-gray-500 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
             </div>
-
-            <button id="sendBtn" class="p-3 bg-emerald-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg active:scale-90 transition-transform">
-                <i data-lucide="send" class="w-6 h-6 rotate-180"></i>
-            </button>
+            <div id="cart-items" class="p-4 flex-1 overflow-y-auto flex flex-col gap-3">
+                <p class="text-center text-gray-400 text-sm my-4">السلة فارغة حالياً</p>
+            </div>
+            <div class="p-4 bg-gray-50 border-t">
+                <div class="flex justify-between items-center mb-4 font-bold text-lg">
+                    <span>الإجمالي:</span>
+                    <span id="cart-total" class="text-indigo-600">0 ج</span>
+                </div>
+                <button onclick="checkoutWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-md flex justify-center items-center gap-2">
+                    تأكيد الطلب عبر واتساب <i class="fab fa-whatsapp text-xl"></i>
+                </button>
+            </div>
         </div>
-    </footer>
+    </div>
 
     <script>
-        lucide.createIcons();
-        const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
-        const statusText = document.getElementById('statusText');
-        const apiKey = document.getElementById('apiKey').value;
-        const avatarMouth = document.getElementById('avatar-mouth');
+        // --- 1. قاعدة البيانات ---
+        const database = [
+            // المنتجات والهدايا
+            { name: "منديل كتب كتاب", price: "100 ج", category: "هدايا" },
+            { name: "فينيل", price: "75 ج", category: "هدايا" },
+            { name: "ساعه", price: "200 ج", category: "هدايا ساعات" },
+            { name: "مرايه سحريه", price: "200 ج", category: "هدايا مرايات" },
+            { name: "فانوس", price: "250 ج", category: "هدايا فوانيس" },
+            { name: "حفر فقط", price: "40 ج", category: "هدايا حفر" },
+            { name: "منيو", price: "25 ج", category: "هدايا منيو" },
+            { name: "سلسله اونه فضى", price: "120 ج", category: "هدايا سلاسل سلسله فضي" },
+            { name: "سلسله عيون", price: "120 ج", category: "هدايا سلاسل سلسله عين" },
+            { name: "سلسله دمت لى خير سند", price: "120 ج", category: "هدايا سلاسل سلسله سند" },
+            { name: "سلسله اونه دهبي", price: "120 ج", category: "هدايا سلاسل سلسله دهبي ذهبي" },
+            { name: "سناده", price: "50 ج", category: "هدايا" },
+            { name: "طباعة جراب", price: "70 ج", category: "هدايا جرابات جراب كفر موبايل" },
+            { name: "محفظه اسود", price: "150 ج", category: "هدايا محافظ محفظة سوداء" },
+            { name: "نوت بوك", price: "135 ج", category: "هدايا نوت كشكول اجندة" },
+            { name: "محفظه بني غامق", price: "150 ج", category: "هدايا محافظ محفظة" },
+            { name: "محفظه بني فاتح", price: "150 ج", category: "هدايا محافظ محفظة" },
+            { name: "قلم مضئ", price: "50 ج", category: "هدايا اقلام قلم" },
+            { name: "انسيال عيون", price: "120 ج", category: "هدايا انسيال عين" },
+            { name: "مج ابيض", price: "100 ج", category: "هدايا مجات كوبايه مج أبيض" },
+            { name: "مج بايركس", price: "85 ج", category: "هدايا مجات كوبايه مج" },
+            { name: "مج حراري", price: "200 ج", category: "هدايا مجات كوبايه مج" },
+            { name: "مج سحري", price: "150 ج", category: "هدايا مجات كوبايه مج" },
+            // الميداليات
+            { name: "مديليا فانوس بصورتك", price: "20 ج", category: "ميداليات مدليه فانوس" },
+            { name: "مدليه مستطيله", price: "25 ج", category: "ميداليات مدليه مستطيل" },
+            { name: "مدليه نوت بوك", price: "85 ج", category: "ميداليات مدليه" },
+            { name: "مدليه فانوس", price: "20 ج", category: "ميداليات مدليه" },
+            // التابلوهات والبراويز
+            { name: "تابلوه 15*10", price: "35 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 21*15", price: "65 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 30*20", price: "85 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 40*30", price: "135 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 50*40", price: "180 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 60*50", price: "225 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 70*50", price: "250 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 90*60", price: "400 ج", category: "تابلوهات تابلوه مقاس بوستر" },
+            { name: "تابلوه 50x70 مجمع صور", price: "250 ج", category: "تابلوهات تابلوه مجمع بوستر" },
+            { name: "برواز 21*15", price: "80 ج", category: "براويز فريم برواز" },
+            { name: "برواز 30*20", price: "120 ج", category: "براويز فريم برواز" },
+            { name: "برواز 40*30", price: "180 ج", category: "براويز فريم برواز" },
+            // العروض
+            { name: "عرض 200 ج (تابلوه 30*20 + مج + ميدليا)", price: "200 ج", category: "عروض عرض توفير باكيدج" },
+            { name: "عرض الفلانتين (مج + فنوس + مدليا)", price: "320 ج", category: "عروض عرض توفير باكيدج فلانتين حب" },
+            { name: "عرض 250 ج (تابلوه 40*30 + مج + ميدليا)", price: "250 ج", category: "عروض عرض توفير باكيدج" },
+        ];
 
-        let isProcessing = false;
-        let waitingMsgCount = 0;
-        let lastMessageTime = 0;
+        // --- 2. إدارة سلة المشتريات وإرسال الطلب ---
+        let cart = [];
 
-        const SYSTEM_PROMPT = `أنت مساعد بشري لمكتب بولا عماد.
-قواعد الرد:
-1. العروض: ارسل رابط المتجر https://bolaemad524-ux.github.io/bolastore/8.html
-2. "تمام" فقط: رد بـ "تمام يا فندم 👍"
-3. "انشاء الله": رد بـ "باذن الله"
-4. تكرار: لا تكرر الرد لو الرسائل في نفس الدقيقة.
-5. رسالة الانتظار: "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل" بحد أقصى مرتين فقط.
-6. ممنوع "لا يوجد رد" أو اعتذار تقني، استخدم رسالة الانتظار بدلاً منها.
-7. الترحيب: مساء الخير -> مساء النور يا فندم، مكتب واستوديو بولا عماد معاك / السلام عليكم -> سلام ورحمه الله وبركاته.
-8. الأسعار: التابلوهات (1510 بـ 35ج، 2115 بـ 65ج، 3020 بـ 85ج، 4030 بـ 135ج) / المجات (أبيض 100ج، بايركس 85ج، سحري 150ج) / الصور (2115 بـ 10ج) / الميداليات (فانوس 20ج) / السلاسل (120ج) / المحافظ (150ج) / التصوير (80 قرشا).
-9. الحجز: فودافون كاش 01285957035.`;
-
-        function append(sender, text) {
-            const div = document.createElement('div');
-            div.className = `flex ${sender === 'User' ? 'justify-end' : 'justify-start'} mb-4`;
-            div.innerHTML = `<div class="p-3 px-4 rounded-2xl max-w-[85%] text-[15px] shadow-md ${sender === 'User' ? 'bg-emerald-700 text-white rounded-tl-none' : 'bg-slate-800 text-slate-100 rounded-tr-none border border-slate-700 leading-relaxed'}">${text}</div>`;
-            chatContainer.appendChild(div);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            if(modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                renderCart();
+            } else {
+                modal.classList.add('hidden');
+            }
         }
 
-        async function processChat(text, isImage = false) {
-            if (isProcessing) return;
-            const now = Date.now();
-            if (!isImage && (now - lastMessageTime < 2000)) return; // منع التكرار السريع
-            lastMessageTime = now;
-
-            // قاعدة الإيموشن فقط
-            if (!isImage && /^[\p{Emoji}\s]+$/u.test(text)) return;
-
-            isProcessing = true;
-            typingIndicator.classList.remove('hidden');
-
-            let responseText = "";
-
-            if (isImage) {
-                responseText = "انتظر سيتم الرد عليك بعد لحظات من خلال فريق العمل";
-            } else if (text === "تمام") {
-                responseText = "تمام يا فندم 👍";
+        function addToCart(name, priceStr, quantity) {
+            const price = parseFloat(priceStr.replace(/[^\d.]/g, ''));
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += quantity;
             } else {
-                try {
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                            contents: [{ parts: [{ text: text }] }]
-                        })
-                    });
-                    const data = await res.json();
-                    responseText = data.candidates[0].content.parts[0].text.trim();
-                } catch (e) {
-                    if (waitingMsgCount < 2) {
-                        responseText = "انتظر سيتم الرد عليك في أقرب وقت من فريق العمل";
-                        waitingMsgCount++;
+                cart.push({ name, price, quantity });
+            }
+            updateCartBadge();
+            addBotMessage(`✅ تم إضافة <b>${quantity} x ${name}</b> للسلة بنجاح!`);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            renderCart();
+            updateCartBadge();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-count');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            if (totalItems > 0) {
+                badge.innerText = totalItems;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 text-sm my-4">السلة فارغة حالياً</p>';
+                totalEl.innerText = '0 ج';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                html += `
+                    <div class="flex justify-between items-center bg-white border p-3 rounded-lg shadow-sm">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">${item.name}</p>
+                            <p class="text-xs text-gray-500">${item.price} ج × ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-indigo-600">${itemTotal} ج</span>
+                            <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 bg-red-50 p-1.5 rounded-full transition">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            totalEl.innerText = `${total} ج`;
+        }
+
+        // --- دالة إرسال الطلب عبر واتساب ---
+        function checkoutWhatsApp() {
+            if (cart.length === 0) {
+                alert("السلة فارغة! برجاء إضافة بعض المنتجات أولاً.");
+                return;
+            }
+
+            let message = "مرحباً مكتب بولا عماد 👋\nأريد طلب المنتجات التالية:\n\n";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                message += `${index + 1}- ${item.name} \n   الكمية: ${item.quantity} | السعر: ${itemTotal} ج\n`;
+            });
+
+            message += `\n-----------------------\n`;
+            message += `*الإجمالي المطلوب: ${total} ج*\n`;
+            message += `-----------------------\n`;
+            message += "برجاء تأكيد الطلب والمتابعة معي، شكراً لكم.";
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappNumber = "201285957035"; 
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+
+
+        // --- 3. خوارزميات الذكاء والبحث ---
+        function levenshtein(a, b) {
+            if(a.length === 0) return b.length; 
+            if(b.length === 0) return a.length; 
+            const matrix = [];
+            for(let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
+            for(let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
+            for(let i = 1; i <= b.length; i++) {
+                for(let j = 1; j <= a.length; j++) {
+                    if(b.charAt(i-1) == a.charAt(j-1)) {
+                        matrix[i][j] = matrix[i-1][j-1];
+                    } else {
+                        matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1));
                     }
                 }
             }
-
-            await new Promise(r => setTimeout(r, 2000)); // وقت الكتابة الطبيعي
-            if (responseText) append('AI', responseText);
-            
-            isProcessing = false;
-            typingIndicator.classList.add('hidden');
+            return matrix[b.length][a.length];
         }
 
-        sendBtn.onclick = () => { const t = messageInput.value.trim(); if (t) { append('User', t); messageInput.value = ""; processChat(t); } };
-        messageInput.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } };
-        attachBtn.onclick = () => imageInput.click();
-        imageInput.onchange = () => { append('User', "📷 [صورة]"); processChat("", true); };
+        function normalizeText(text) {
+            const arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
+            for(let i=0; i<10; i++) { text = text.replace(arabicNumbers[i], i); }
+            return text.replace(/[أإآ]/g, 'ا')
+                       .replace(/ة/g, 'ه')
+                       .replace(/ي/g, 'ى')
+                       .toLowerCase()
+                       .trim();
+        }
+
+        const synonyms = {
+            'كوبايه': 'مج', 'كبايه': 'مج', 'كوب': 'مج', 'مجات': 'مج',
+            'ميداليه': 'مدليه', 'مادليا': 'مدليه', 'ميداليات': 'مدليه',
+            'فريم': 'برواز', 'براويز': 'برواز',
+            'بوستر': 'تابلوه', 'لوحه': 'تابلوه', 'تابلوهات': 'تابلوه',
+            'صوره': 'صور', 'كفر': 'جراب', 'اجنده': 'نوت', 'كشكول': 'نوت'
+        };
+
+        const stopWords = ['بكام', 'سعر', 'عايز', 'عاوز', 'لو', 'سمحت', 'كام', 'ايه', 'من', 'فضلك', 'عندكم', 'عندك', 'ب', 'جنيه', 'انا', 'محتاج', 'قطعة', 'قطع', 'حته'];
+
+        function processInput(input) {
+            let normalizedInput = normalizeText(input);
+
+            // ====== جزء التحيات الجديد ======
+            if (normalizedInput === "صباح الخير" || normalizedInput.includes("صباح الفل") || normalizedInput.includes("صباح الورد")) {
+                return "صباح النور يا فندم! ☀️ نورت مكتب بولا عماد، أقدر أساعدك إزاي النهاردة؟";
+            }
+            if (normalizedInput === "مساء الخير" || normalizedInput.includes("مساء الفل") || normalizedInput.includes("مساء الورد")) {
+                return "مساء النور يا فندم! 🌙 نورت مكتب بولا عماد، أقدر أساعدك إزاي؟";
+            }
+            if (normalizedInput.includes("السلام عليكم") || normalizedInput.includes("سلام عليكم")) {
+                return "وعليكم السلام ورحمة الله وبركاته يا فندم! 👋 تحت أمرك، بتدور على منتج إيه؟";
+            }
+            if (normalizedInput === "اهلا" || normalizedInput.includes("مرحبا") || normalizedInput === "مرحب" || normalizedInput === "اهلا بك" || normalizedInput === "اهلا بيك") {
+                return "أهلاً بيك يا فندم! 👋 نورتنا.. اكتب اسم الحاجه اللي بتدور عليها وهقولك سعرها على طول.";
+            }
+            if (normalizedInput === "ازيك" || normalizedInput.includes("عامل ايه") || normalizedInput.includes("اخبارك")) {
+                return "الحمد لله تمام يا فندم! دايماً في خدمتك 👋 أتمنى تكون بخير. أقدر أساعدك إزاي؟";
+            }
+            // ================================
+
+            let quantity = 1;
+            const numMatch = normalizedInput.match(/\d+/);
+            if (numMatch) {
+                quantity = parseInt(numMatch[0], 10);
+                if(quantity <= 0) quantity = 1;
+            }
+
+            let rawWords = normalizedInput.replace(/[^\w\s\u0600-\u06FF\d\*xX]/g, '').split(' ');
+            let searchWords = [];
+
+            rawWords.forEach(word => {
+                if(!isNaN(word)) return;
+                if(word.startsWith('ال') && word.length > 3) word = word.substring(2);
+                if(synonyms[word]) word = synonyms[word];
+                if(!stopWords.includes(word) && word.length > 1) searchWords.push(word);
+            });
+
+            if (searchWords.length === 0) {
+                 return "ممكن توضحلي اسم المنتج اللي بتسأل عليه؟ (زي: 2 مج سحري، أو تابلوه 30*20)";
+            }
+
+            let matchedItems = [];
+            database.forEach(item => {
+                let itemName = normalizeText(item.name);
+                let itemCategory = normalizeText(item.category);
+                let score = 0;
+                let wordsMatched = 0;
+
+                searchWords.forEach(searchWord => {
+                    if (itemName.includes(searchWord) || itemName.split(' ').includes(searchWord)) {
+                        score += 20; wordsMatched++;
+                    } else if (itemCategory.includes(searchWord)) {
+                        score += 10; wordsMatched++;
+                    } else {
+                        let itemWords = itemName.split(' ');
+                        let bestDist = 99;
+                        itemWords.forEach(iw => {
+                            let dist = levenshtein(searchWord, iw);
+                            if(dist < bestDist) bestDist = dist;
+                        });
+                        if(searchWord.length >= 4 && bestDist <= 2) {
+                            score += 12; wordsMatched++;
+                        } else if (searchWord.length >= 3 && itemName.includes(searchWord.substring(0, 3))) {
+                            score += 5; wordsMatched++;
+                        }
+                    }
+                });
+
+                if (wordsMatched === searchWords.length && searchWords.length > 1) score += 50; 
+                if (score > 0) matchedItems.push({ item, score });
+            });
+
+            if (matchedItems.length > 0) {
+                matchedItems.sort((a, b) => b.score - a.score);
+                if (matchedItems[0].score >= 30 || (matchedItems.length === 1 && matchedItems[0].score >= 10)) {
+                    let bestItem = matchedItems[0].item;
+                    let singlePrice = parseFloat(bestItem.price.replace(/[^\d.]/g, ''));
+                    let totalStr = quantity > 1 ? `<br><span class="text-xs text-gray-500">الإجمالي لـ ${quantity} قطع = <b class="text-indigo-600">${singlePrice * quantity} ج</b></span>` : '';
+                    
+                    let res = `سعر <b>${bestItem.name}</b> هو: <span class="text-indigo-600 font-bold">${bestItem.price}</span>${totalStr}`;
+                    res += `<div class="mt-3 border-t pt-2">
+                                <button onclick="addToCart('${bestItem.name}', '${bestItem.price}', ${quantity})" class="w-full bg-indigo-50 text-indigo-700 py-1.5 rounded-lg text-sm font-bold border border-indigo-100 hover:bg-indigo-100 transition flex justify-center items-center gap-2">
+                                    <i class="fas fa-cart-plus"></i> أضف للسلة (${quantity})
+                                </button>
+                            </div>`;
+                    return res;
+                }
+
+                let res = `لقيت أكتر من حاجة، تقصد أي واحد في دول؟<br><div class="mt-2 space-y-2">`;
+                const topMatches = matchedItems.slice(0, 4);
+                topMatches.forEach(match => {
+                    res += `
+                    <div class="bg-white border p-2 rounded-lg shadow-sm text-xs flex justify-between items-center">
+                        <div><b>${match.item.name}</b><br><span class="text-indigo-600">${match.item.price}</span></div>
+                        <button onclick="addToCart('${match.item.name}', '${match.item.price}', ${quantity})" class="bg-indigo-600 text-white w-7 h-7 rounded-full flex justify-center items-center hover:bg-indigo-700">
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
+                    </div>`;
+                });
+                res += `</div>`;
+                return res;
+            }
+
+            return "عفواً، مش لاقي المنتج ده بالتحديد عندنا. 😔<br>جرب تكتب اسمه بطريقة تانية.";
+        }
+
+        // --- 4. واجهة المحادثة ---
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addUserMessage(text) {
+            const html = `
+                <div class="flex gap-2 justify-end message-enter">
+                    <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm w-fit max-w-[85%]">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function addBotMessage(text) {
+            const html = `
+                <div class="flex gap-2 message-enter">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600">
+                        <i class="fas fa-robot text-sm"></i>
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-gray-700 text-sm w-fit max-w-[85%] leading-relaxed">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addUserMessage(text);
+            userInput.value = '';
+
+            const typingId = 'typing-' + Date.now();
+            const typingHtml = `
+                <div id="${typingId}" class="flex gap-2 message-enter">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600">
+                        <i class="fas fa-robot text-sm"></i>
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-gray-400 text-sm w-fit flex gap-1 items-center">
+                        <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', typingHtml);
+            scrollToBottom();
+
+            setTimeout(() => {
+                document.getElementById(typingId).remove();
+                const response = processInput(text);
+                addBotMessage(response);
+            }, 600);
+        });
+
+        function clearChat() {
+            chatMessages.innerHTML = '';
+            addBotMessage('أهلاً بك مرة أخرى! السلة كما هي، هل تبحث عن شيء آخر؟');
+        }
     </script>
 </body>
 </html>
